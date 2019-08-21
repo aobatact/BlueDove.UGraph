@@ -1,0 +1,16 @@
+{
+    "name": "BlueDove.UGraph.Jobs",
+    "references": [
+        "GUID:0522fb842b1b6dd43bb1771624da874e",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

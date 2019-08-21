@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.Collections;
 
 namespace BlueDove.UGraph
 {
@@ -9,5 +10,14 @@ namespace BlueDove.UGraph
         TEdge GetEdge(TNode source, TNode target);
         IEnumerable<TEdge> GetEdges(TNode node);
         IEnumerable<TNode> GetNodes();
+    }
+    
+    public interface INativeGraph<TNode, TEdge> where TNode : struct where TEdge : struct, IEdge<TNode>
+    {
+        bool Contains(TNode node);
+        bool Contains(TEdge node);
+        TEdge GetEdge(TNode source, TNode target);
+        NativeArray<TEdge> GetEdges(TNode node);
+        NativeArray<TNode> GetNodes();
     }
 }
