@@ -4,4 +4,9 @@ namespace BlueDove.UGraph.Algorithm
     {
         float Calc(T value);
     }
+
+    public interface IHeuristicFunc<in T>
+    {
+        float CalcHeuristic(T value);
+    }
 }
