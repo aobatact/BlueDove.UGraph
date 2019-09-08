@@ -1,3 +1,15 @@
-﻿{
-	"name": "BlueDove.UGraph"
+{
+    "name": "BlueDove.UGraph",
+    "references": [
+        "GUID:a4b99c517ed80b74e9a076b63baa8f6e"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
 }

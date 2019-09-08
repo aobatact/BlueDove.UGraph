@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Immutable;
+using BlueDove.UCollections;
 using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph.Algorithm
@@ -7,57 +8,45 @@ namespace BlueDove.UGraph.Algorithm
     /// <summary>
     /// Class to calculate A*
     /// </summary>
-    /// <typeparam name="TNode">Node Type</typeparam>
-    /// <typeparam name="TEdge">Edge Type</typeparam>
-    /// <typeparam name="TGraph">Graph Type</typeparam>
-    /// <typeparam name="THeap">Priority Queue to use inside</typeparam>
-    /// <typeparam name="TGFunc">Function of calculating Cost in Edge</typeparam>
-    /// <typeparam name="THFunc">Function of calculating heuristic cost for Node</typeparam>
-    public class AStarAlgorithm<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>
-        where TNode : IEquatable<TNode>, IIDHolder
-        where TEdge : IEdge<TNode>
-        where TGraph : IGraph<TNode, TEdge>
-        where THeap : IPriorityQueue<int>
-        where TGFunc : ICostFunc<TEdge>
-        where THFunc : ICostFunc<TNode>
+    public static class AStarAlgorithm
     {
-        private readonly TGraph graph;
-        private readonly Func<THeap> heapFactory;
-        private readonly TGFunc costFunc;
-        private readonly THFunc heuristicFunc;
-
-        /// <summary>
-        /// Constructor of A* algorithm
-        /// </summary>
-        /// <param name="graph">Graph to search</param>
-        /// <param name="heapFactory">Factory of creating heap</param>
-        /// <param name="costFunc">Function of calculating Cost in Edge</param>
-        /// <param name="heuristicFunc">Function of calculating heuristic cost for Node</param>
-        public AStarAlgorithm(TGraph graph, Func<THeap> heapFactory, TGFunc costFunc, THFunc heuristicFunc)
-        {
-            this.graph = graph;
-            this.heapFactory = heapFactory;
-            this.costFunc = costFunc;
-            this.heuristicFunc = heuristicFunc;
-        }
 
         /// <summary>
         /// Compute the A* algorithm
         /// </summary>
+        /// <typeparam name="TNode">Node Type</typeparam>
+        /// <typeparam name="TEdge">Edge Type</typeparam>
+        /// <typeparam name="TGraph">Graph Type</typeparam>
+        /// <typeparam name="THeap">Priority Queue to use inside</typeparam>
+        /// <typeparam name="TGFunc">Function of calculating Cost in Edge</typeparam>
+        /// <typeparam name="THFunc">Function of calculating heuristic cost for Node</typeparam>
+        /// <param name="graph">Graph to search</param>
+        /// <param name="heapFactory">Factory of creating heap</param>
+        /// <param name="costFunc">Function of calculating Cost in Edge</param>
+        /// <param name="heuristicFunc">Function of calculating heuristic cost for Node</param>
         /// <param name="start">Start Node.</param>
         /// <param name="end">Set of EndNode. This could be single node of some end condition.</param>
         /// <typeparam name="TEndNode">Type to confirm the current node fulfill the end condition.</typeparam>
         /// <returns>Path to the start node to end node.</returns>
-        public ImmutableList<TEdge> Compute<TEndNode>(TNode start, TEndNode end)
+        public static ImmutableList<TEdge> Compute<TNode, TEdge, TGraph, THeap, TGFunc, THFunc, TEndNode>(
+            TGraph graph, Func<THeap> heapFactory, TGFunc costFunc,
+            THFunc heuristicFunc, TNode start, TEndNode end)
+            where TNode : IEquatable<TNode>, IIDHolder
+            where TEdge : IEdge<TNode>
+            where TGraph : IReadOnlyGraph<TNode, TEdge>
+            where THeap : IPriorityQueue<int>
+            where TGFunc : ICostFunc<TEdge>
+            where THFunc : ICostFunc<TNode>
             where TEndNode : IEquatable<TNode>
         {
-            DictionarySlim<int, AStarNode> nodeList= new DictionarySlim<int, AStarNode>();
+            DictionarySlim<int, AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>> nodeList =
+                new DictionarySlim<int, AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>>();
             THeap heap = heapFactory();
             TNode current;
             //If the start node fulfill the end condition, end the path finding.
             if (end.Equals(current = start))
                 return ImmutableList<TEdge>.Empty;
-            var min = new AStarNode(current);
+            var min = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>(current);
             while (true)
             {
                 Loop:
@@ -68,7 +57,8 @@ namespace BlueDove.UGraph.Algorithm
                     if(end.Equals(ot))
                         goto End;
                     ref var aNode = ref nodeList.GetOrAddValueRef(ot.ID);
-                    if (aNode.ID == 0) aNode = new AStarNode(ot);
+                    if (aNode.ID == 0) aNode = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>(ot);
+                    if (aNode.CurrentG <= min.CurrentG) continue;
                     var ng = min.CurrentG + costFunc.Calc(edge);
                     var nf = ng + heuristicFunc.Calc(ot);
                     if (aNode.Priority <= nf) continue;
@@ -88,8 +78,7 @@ namespace BlueDove.UGraph.Algorithm
                         if (min.Closed)
                             continue;
                         min.Closed = true;
-                        if (end.Equals(current = min.Value))
-                            goto End;
+                        current = min.Value;
                         goto Loop;
                     }
                     goto NotFound;
@@ -102,7 +91,14 @@ namespace BlueDove.UGraph.Algorithm
             return ImmutableList<TEdge>.Empty;
         }
         
-        internal struct AStarNode : IEquatable<AStarNode>, IEquatable<TNode>
+        internal struct AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc> :
+            IEquatable<AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc>>
+            where TNode : IEquatable<TNode>, IIDHolder
+            where TEdge : IEdge<TNode>
+            where TGraph : IReadOnlyGraph<TNode, TEdge>
+            where THeap : IPriorityQueue<int>
+            where TGFunc : ICostFunc<TEdge>
+            where THFunc : ICostFunc<TNode>
         {
             public AStarNode(TNode value)
             {
@@ -119,18 +115,11 @@ namespace BlueDove.UGraph.Algorithm
             public float Priority { get; set; }
             public bool Closed { get; set; }
             public ImmutableList<TEdge> Path { get; set; }
-            public bool Equals(AStarNode other)
-            {
-                return ID == other.ID;
-            }
+            public bool Equals(AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc> other)
+                => ID == other.ID;
 
-            public bool Equals(TNode other) => Value.Equals(other);
-
-            public override bool Equals(object obj)
-            {
-                return obj is AStarNode other && Equals(other) ||
-                       obj is TNode t && Value.Equals(t);
-            }
+            public override bool Equals(object obj) 
+                => obj is AStarNode<TNode, TEdge, TGraph, THeap, TGFunc, THFunc> other && Equals(other);
 
             public override int GetHashCode() => ID;
         }

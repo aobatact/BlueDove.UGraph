@@ -1,4 +1,4 @@
-namespace BlueDove.UGraph.Algorithm
+namespace BlueDove.UCollections
 {
     public interface IHeap<T>
     {
