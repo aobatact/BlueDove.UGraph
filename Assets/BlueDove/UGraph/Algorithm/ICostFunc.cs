@@ -5,8 +5,8 @@ namespace BlueDove.UGraph.Algorithm
         float Calc(T value);
     }
 
-    public interface IHeuristicFunc<in T>
+    public struct DijkstraHeuristicFunc<T> : ICostFunc<T>
     {
-        float CalcHeuristic(T value);
+        public float Calc(T value) => 0f;
     }
 }
