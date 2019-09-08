@@ -1,5 +1,5 @@
 using System;
-using BlueDove.UCollections;
+using BlueDove.Collections.Heaps;
 using BlueDove.UGraph.Algorithm;
 using Unity.Jobs;
 using Unity.Collections;
@@ -14,30 +14,27 @@ namespace BlueDove.UGraph.Jobs
     }
     
     
-    public struct AStarJob<TNode, TEndNode, TEdge, TGraph, THeap, TGFunc, THFunc> : IJob
+    public struct AStarJob<TNode, TEndNode, TEdge, TGraph, THeap, TGFunc> : IJob
         where TNode : unmanaged, IEquatable<TNode>, IIDHolder
         where TEdge : unmanaged, IEdge<TNode>, IEquatable<TEdge>
         where TGraph : unmanaged, IReadOnlyNativeGraph<TNode, TEdge>
-        where THeap : struct, IPriorityQueue<int>
+        where THeap : struct, IHeap<int>
         where TGFunc : unmanaged, ICostFunc<TEdge>
-        where THFunc : unmanaged, ICostFunc<TNode>
-        where TEndNode : unmanaged, IEquatable<TNode>
+        where TEndNode : unmanaged, IEquatable<TNode>, ICostFunc<TNode>
     {
         private readonly TGraph graph;
         private readonly TGFunc costFunc;
-        private readonly THFunc heuristicFunc;
         private readonly THeap heap;
         private readonly NativeRefDictionary<int, AStarNode> nodeList;
         private readonly TNode start;
         private readonly TEndNode end;
         public readonly NativeList<TEdge> ReversePath;
 
-        public AStarJob(TGraph graph, TGFunc costFunc, THFunc heuristicFunc, THeap heap, TNode start, TEndNode end,
+        public AStarJob(TGraph graph, TGFunc costFunc, THeap heap, TNode start, TEndNode end,
             NativeList<TEdge> path, NativeRefDictionary<int, AStarNode> nodeList)
         {
             this.graph = graph;
             this.costFunc = costFunc;
-            this.heuristicFunc = heuristicFunc;
             this.heap = heap;
             this.nodeList = nodeList;
             this.start = start;
@@ -45,9 +42,9 @@ namespace BlueDove.UGraph.Jobs
             ReversePath = path;
         }
 
-        public AStarJob(TGraph graph, TGFunc costFunc, THFunc heuristicFunc, THeap heap, TNode start, TEndNode end,
+        public AStarJob(TGraph graph, TGFunc costFunc, THeap heap, TNode start, TEndNode end,
             Allocator allocator)
-            : this(graph, costFunc, heuristicFunc, heap, start, end, new NativeList<TEdge>(allocator), default){}
+            : this(graph, costFunc, heap, start, end, new NativeList<TEdge>(allocator), default){}
 
         public void Execute()
         {
@@ -74,12 +71,11 @@ namespace BlueDove.UGraph.Jobs
                     else if (aNode.CurrentG <= min.CurrentG) 
                         continue;
                     var ng = min.CurrentG + costFunc.Calc(edge);
-                    var nf = ng + heuristicFunc.Calc(ot);
+                    var nf = ng + end.Calc(ot);
                     if (aNode.Priority <= nf) continue;
                     aNode.Priority = nf;
                     aNode.CurrentG = ng;
                     aNode.Closed = false;
-                    //aNode.Path = min.Path.Add(edge);
                     aNode.RootPath = edge;
                     heap.Push(ot.ID);
                 }
@@ -110,11 +106,9 @@ namespace BlueDove.UGraph.Jobs
                 var n = root.GetOther<TNode, TNode, TEdge>(min.Value);
                 nodeList.TryGetValue(n.ID, out min);
             }
-            
-            
+
             //return min.Path;
             NotFound: ;
-            
             openList.Dispose();
         }
         

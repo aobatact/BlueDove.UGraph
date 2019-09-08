@@ -1,13 +1,13 @@
-namespace BlueDove.UCollections
+namespace BlueDove.Collections.Heaps
 {
     public interface IHeap<T>
     {
-        int Count { get; }
+        void Push(T value);
         T Peek();
         T Pop();
-        void Push(T value);
+        bool TryPeek(out T value);
+        bool TryPop(out T value);
+        int Count { get; }
+        void Clear();
     }
-    
-    public interface IPriorityQueue<T> : IHeap<T>
-    { }
 }
