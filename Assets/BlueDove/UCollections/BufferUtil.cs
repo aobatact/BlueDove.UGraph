@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace BlueDove.Collections.Heaps
 {
-    internal static class BufferUtil
+    public static class BufferUtil
     {
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void Expand<T>(ref T[] buffer)
