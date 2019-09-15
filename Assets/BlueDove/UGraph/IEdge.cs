@@ -27,4 +27,12 @@ namespace BlueDove.UGraph
         }
     }
 
+    /// <summary>
+    /// Mark Node for Debug
+    /// </summary>
+    public interface IMarkable
+    {
+        void Mark(Color color);
+    }
+
 }
