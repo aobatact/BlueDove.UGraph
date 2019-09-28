@@ -43,10 +43,9 @@ namespace BlueDove.Collections.Heaps
 
         public void Push(T value)
         {
-            Debug.Assert(default(TConverter).Compare(Last,value) <= 0);
+            //Debug.Assert(default(TConverter).Compare(Last,value) <= 0);
             Count++;
-            var target = default(TConverter).GetIndex(Last, value);
-            Add2Buffer(value, target);
+            Add2Buffer(value, default(TConverter).GetIndex(Last, value));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -106,8 +105,14 @@ namespace BlueDove.Collections.Heaps
                 while (_bufferSizes[++i] == 0) Debug.Assert(i + 1 < _buffers.Length);
 #if NET_STANDARD_2_0
                 var buffer = _buffers[i];
-                var nl = Min(buffer, _bufferSizes[i]);
-                foreach (var t in buffer) Add2Buffer(nl, default(TConverter).GetIndex(nl, t));
+                var bufferSiz = _bufferSizes[i];
+                var nl = Min(buffer, bufferSiz);
+                for (var j = 0; j < bufferSiz; j++)
+                {
+                    var t = buffer[j];
+                    var target = default(TConverter).GetIndex(nl, t);
+                    Add2Buffer(t, target);
+                }
 #else
                 var buffer = _buffers[i].AsSpan(0, _bufferSizes[i]);
                 var nl = Min(buffer);

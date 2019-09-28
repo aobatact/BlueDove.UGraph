@@ -11,19 +11,21 @@ public class PathSearcher : MonoBehaviour
     public MonoNode StartPoint;
     public MonoNode EndPoint;
     public MonoGraph Graph;
-    private bool X;
+    public bool SearchNextFrame;
 
     private void Start()
     {
-        X = true;
+        SearchNextFrame = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (X)
+        if (SearchNextFrame)
         {
-            X = false;
+            SearchNextFrame = false;
+            Graph.ResetNodeColors();
+            Graph.ResetEdgeColors();
             SetColorOnPath();
         }
     }
@@ -38,10 +40,18 @@ public class PathSearcher : MonoBehaviour
 
     void SetColorOnPath()
     {
-        foreach (var edge in SearchNodes())
+        var immutableList = SearchNodes();
+        if (immutableList.IsEmpty)
         {
-            edge.Renderer.startColor = Color.green;
-            edge.Renderer.endColor = Color.cyan;
+            Debug.LogWarning("Root Not Found");
+        }
+        else
+        {
+            foreach (var edge in immutableList)
+            {
+                edge.Renderer.startColor = Color.green;
+                edge.Renderer.endColor = Color.cyan;
+            }
         }
     }
 }

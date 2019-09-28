@@ -4,8 +4,8 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 #if UNITY_2019_2_OR_NEWER
 using Unity.Mathematics;
-
 #endif
+
 namespace BlueDove.Collections.Heaps
 {
     public interface IUnsignedValueConverter<in T> : IComparer<T>

@@ -26,9 +26,9 @@ namespace BlueDove.Sample
 
         void Update()
         {
-            var pos = new Vector3[2];
-            _renderer.GetPositions(pos);
-            if (!pos[0].Equals(Source.transform.position) || !pos[1].Equals(Target.transform.position)) ;
+            //var pos = new Vector3[2];
+            //_renderer.GetPositions(pos);
+            if (!(pos[0] == Source.transform.position) || !(pos[1] == Target.transform.position))
             {
                 ReDraw();
             }
@@ -66,7 +66,8 @@ namespace BlueDove.Sample
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Source.Equals(other.Source) && Target.Equals(other.Target);
+            return (Source.Equals(other.Source) && Target.Equals(other.Target)) || 
+                   (Source.Equals(other.Target) && Target.Equals(other.Source));
         }
 
         public override bool Equals(object obj)
@@ -86,6 +87,18 @@ namespace BlueDove.Sample
                 hashCode = (hashCode * 397) ^ (Target != null ? Target.GetHashCode() : 0);
                 return hashCode;
             }
+        }
+
+        public float GetDistanceSqr()
+        {
+            return Vector3.SqrMagnitude(Direction);
+        }
+
+        public Vector3 Direction => Source.transform.position - Target.transform.position;
+
+        private void OnDestroy()
+        {
+            Destroy(gameObject);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace BlueDove.Sample
 {
     [RequireComponent(typeof(MeshRenderer))]
     [RequireComponent(typeof(MeshFilter))]
-    public class MonoNode : MonoBehaviour, IIDHolder, IEquatable<MonoNode>, ICostFunc<MonoNode>, IMarkable
+    public class MonoNode : MonoBehaviour, IIDHolder, IEquatable<MonoNode>, ICostFunc<MonoNode>, IMarkable, IDisposable
     {
         public int ID { get; private set; }
 
@@ -48,6 +48,23 @@ namespace BlueDove.Sample
                 colors.Add(color);
             mesh.SetColors(colors);
             mesh.UploadMeshData(false);
+        }
+        
+        public void Dispose()
+        {
+            if (enabled)
+            {
+                Destroy(this);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            enabled = false;
+            var graph = GetComponentInParent<MonoGraph>();
+            if (graph != null)
+                graph.RemoveNode(this);
+            Destroy(gameObject);
         }
     }
 }

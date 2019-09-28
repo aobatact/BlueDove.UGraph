@@ -46,9 +46,11 @@ namespace BlueDove.UGraph.Algorithm
             //If the start node fulfill the end condition, end the path finding.
             if (end.Equals(current = start))
                 return ImmutableList<TEdge>.Empty;
-            var min = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>(current, true);
+            end.MarkColor(NodeType.End);
+            var sNode = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>(current, true);
+            ref var min = ref sNode; 
             nodeList.GetOrAddValueRef(min.ID) = min;
-            current.MarkColor(NodeType.Current);
+            current.MarkColor(NodeType.Start);
             while (true)
             {
                 Loop:
@@ -80,7 +82,8 @@ namespace BlueDove.UGraph.Algorithm
                 while (heap.Count > 0)
                 {
                     var id = heap.Pop();
-                    if (nodeList.TryGetValue(id.Value, out min))
+                    min = ref nodeList.GetOrAddValueRef(id.Value);
+                    if (min.Initialized)
                     {
                         //if the next node is closed, skip it.
                         if (min.Closed)
@@ -103,7 +106,9 @@ namespace BlueDove.UGraph.Algorithm
             None,
             Open,
             Current,
-            Close
+            Close,
+            Start,
+            End,
         }
 
         [Conditional("DEBUG_MARK")]
@@ -115,6 +120,7 @@ namespace BlueDove.UGraph.Algorithm
                 {
                     case NodeType.None:
                     default:
+                        markable.Mark(Color.white);
                         break;
                     case NodeType.Open:
                         markable.Mark(Color.blue);
@@ -124,6 +130,12 @@ namespace BlueDove.UGraph.Algorithm
                         break;
                     case NodeType.Close:
                         markable.Mark(Color.red);
+                        break;
+                    case NodeType.Start:
+                        markable.Mark(Color.magenta);
+                        break;
+                    case NodeType.End:
+                        markable.Mark(Color.yellow);
                         break;
                 }
             }
