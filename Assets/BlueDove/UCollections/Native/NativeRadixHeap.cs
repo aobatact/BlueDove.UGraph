@@ -5,12 +5,12 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 
-namespace BlueDove.UCollections
+namespace BlueDove.UCollections.Native
 {
     [NativeContainer]
     public struct NativeRadixHeap<T, TConverter> : IHeap<T>, IDisposable
-        where T : unmanaged, IComparable<T>
-        where TConverter : unmanaged, IUnsignedValueConverter<T>
+        where T : struct
+        where TConverter : struct, IUnsignedValueConverter<T>
     {
         private NativeArray<UnsafeList> _nativeArray;
         public int Count { get; private set; }
@@ -38,8 +38,8 @@ namespace BlueDove.UCollections
             {
                 _nativeArray[i] = new UnsafeList(allocator);
             }
-        }        
-        
+        }
+
         private void InitAlloc(int initialCount, Allocator allocator)
         {
             for (var i = 0; i < _nativeArray.Length; i++)
@@ -75,7 +75,6 @@ namespace BlueDove.UCollections
                 //UnsafeUtilityEx.ArrayElementAsRef<UnsafeList>(_nativeArray.GetUnsafePtr(), 0).Length--;
                 ((UnsafeList*) _nativeArray.GetUnsafePtr())->Length--;
             }
-            
             Count--;
             return Last;
         }
@@ -117,11 +116,11 @@ namespace BlueDove.UCollections
             unsafe
             {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
-                if(Count == 0)
+                if (Count == 0)
                     BufferUtil.ThrowNoItem();
 #endif
-                var zero = (UnsafeList*)_nativeArray.GetUnsafePtr();
-                
+                var zero = (UnsafeList*) _nativeArray.GetUnsafePtr();
+
                 if (zero->Length == 0)
                 {
                     var ptr = zero;
@@ -132,32 +131,32 @@ namespace BlueDove.UCollections
                     {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
                         ++i;
-                        if(i + 1 >= _nativeArray.Length)
+                        if (i + 1 >= _nativeArray.Length)
                             BufferUtil.ThrowNoItem();
 #endif
                     }
 
-                    var ptrPtr = (T*)ptr->Ptr;
-                    var min = ptrPtr[0];
+                    ref var ptrPtr = ref Unsafe.AsRef<T>(ptr->Ptr);
+                    var min = ptrPtr;
                     var length = ptr->Length;
                     for (var j = 1; j < length; j++)
                     {
-                        var current = ptrPtr[j];
-                        if (min.CompareTo(current) > 0)
+                        var current = Unsafe.Add(ref ptrPtr, j);
+                        if (default(TConverter).Compare(min, current) > 0)
                             min = current;
                     }
 
                     for (var j = 0; j < length; j++)
                     {
-                        var value = ptrPtr[j];
-                        Unsafe.Add(ref Unsafe.AsRef<UnsafeList>(_nativeArray.GetUnsafePtr()),
-                            default(TConverter).GetIndex(min, value)).Add(value);
+                        var value = Unsafe.Add(ref ptrPtr, j);
+                        var elementOffset = default(TConverter).GetIndex(min, value);
+                        zero[elementOffset].Add(value);
                     }
 
                     ptr->Clear();
                 }
-                //Last = UnsafeUtility.ReadArrayElement<T>(zero->Ptr, zero->Length - 1);
-                Last = ((T*) zero->Ptr)[zero->Length - 1];
+
+                Last = Unsafe.Add(ref Unsafe.AsRef<T>(zero->Ptr), zero->Length - 1);
             }
         }
 
@@ -186,7 +185,7 @@ namespace BlueDove.UCollections
 
         public JobHandle Dispose(JobHandle inputDeps)
         {
-            var jobHandle = new DisposeJob { Container = this }.Schedule(inputDeps);
+            var jobHandle = new DisposeJob {Container = this}.Schedule(inputDeps);
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.Release(NativeArrayUnsafeUtility.GetAtomicSafetyHandle(_nativeArray));
 #endif

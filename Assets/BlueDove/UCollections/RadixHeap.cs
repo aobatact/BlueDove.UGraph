@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace BlueDove.Collections.Heaps
 {
     public class RadixHeap<T, TConverter> : IHeap<T>
-        where T : IComparable<T> where TConverter : struct, IUnsignedValueConverter<T>
+        where TConverter : struct, IUnsignedValueConverter<T>
     {
         private readonly T[][] _buffers;
         private readonly int[] _bufferSizes;
@@ -42,7 +43,7 @@ namespace BlueDove.Collections.Heaps
 
         public void Push(T value)
         {
-            Debug.Assert(Last.CompareTo(value) <= 0);
+            Debug.Assert(default(TConverter).Compare(Last,value) <= 0);
             Count++;
             var target = default(TConverter).GetIndex(Last, value);
             Add2Buffer(value, target);
@@ -70,6 +71,7 @@ namespace BlueDove.Collections.Heaps
             value = Last;
             Count--;
             _bufferSizes[0]--;
+            Debug.Assert(_bufferSizes[0] >= 0);
             return true;
         }
 
@@ -105,8 +107,14 @@ namespace BlueDove.Collections.Heaps
                 while (_bufferSizes[++i] == 0) Debug.Assert(i + 1 < _buffers.Length);
 #if NET_STANDARD_2_0
                 var buffer = _buffers[i];
-                var nl = Min(buffer, _bufferSizes[i]);
-                foreach (var t in buffer) Add2Buffer(nl, default(TConverter).GetIndex(nl, t));
+                var bufferSiz = _bufferSizes[i];
+                var nl = Min(buffer, bufferSiz);
+                for (var j = 0; j < bufferSiz; j++)
+                {
+                    var t = buffer[j];
+                    var target = default(TConverter).GetIndex(nl, t);
+                    Add2Buffer(t, target);
+                }
 #else
                 var buffer = _buffers[i].AsSpan(0, _bufferSizes[i]);
                 var nl = Min(buffer);
@@ -125,7 +133,8 @@ namespace BlueDove.Collections.Heaps
             ref var buffer = ref _buffers[target];
             ref var bfs = ref _bufferSizes[target];
             if (buffer.Length == 0) Array.Resize(ref buffer, 4);
-            else if (buffer.Length <= bfs) Array.Resize(ref buffer, buffer.Length << 1);
+            else if (buffer.Length <= bfs)
+                Array.Resize(ref buffer, buffer.Length << 1); //BufferUtil.Expand(ref buffer);
             buffer[bfs++] = value;
         }
 
@@ -143,7 +152,7 @@ namespace BlueDove.Collections.Heaps
 #endif
             {
                 var value = buffer[i];
-                if (min.CompareTo(value) > 0)
+                if (default(TConverter).Compare(min, value) > 0)
                     min = value;
             }
 
@@ -226,11 +235,11 @@ namespace BlueDove.Collections.Heaps
             Debug.Assert(Count > 0);
             if (_innerHeaps[0].Count > 0) return;
             var i = 0;
-            while (_innerHeaps[++i].Count != 0) 
+            while (_innerHeaps[++i].Count != 0)
                 Debug.Assert(i + 1 < _innerHeaps.Length);
 
             var nl = _innerHeaps[i].Pop();
-            while (_innerHeaps[i].TryPop(out var value)) 
+            while (_innerHeaps[i].TryPop(out var value))
                 Add2Buffer(value, default(TConverter).GetIndex(Last, value));
 
             Last = nl;

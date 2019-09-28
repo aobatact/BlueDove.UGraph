@@ -1,17 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 #if UNITY_2019_2_OR_NEWER
 using Unity.Mathematics;
 #endif
+
 namespace BlueDove.Collections.Heaps
 {
-    public interface IUnsignedValueConverter<in T>
+    public interface IUnsignedValueConverter<in T> : IComparer<T>
     {
         int GetIndex(T last, T value);
         int BufferSize();
     }
-    
     public readonly struct UintValueConverter : IUnsignedValueConverter<uint>
     {
         public int GetIndex(uint last, uint value)
@@ -21,8 +22,11 @@ namespace BlueDove.Collections.Heaps
             return BitOperations.Log2(last ^ value) + 1;
         }
 
-        public int BufferSize() 
+        public int BufferSize()
             => 33;
+
+        public int Compare(uint x, uint y) 
+            => x.CompareTo(y);
     }
 
     public readonly struct IntValueConverter : IUnsignedValueConverter<int>
@@ -31,11 +35,14 @@ namespace BlueDove.Collections.Heaps
         {
             Debug.Assert(value >= last);
             if (last == value) return 0;
-            return BitOperations.Log2((uint)(last ^ value)) + 1;
+            return BitOperations.Log2((uint) (last ^ value)) + 1;
         }
 
-        public int BufferSize() 
+        public int BufferSize()
             => 32;
+        
+        public int Compare(int x, int y) 
+            => x.CompareTo(y);
     }
 
     public readonly struct UlongValueConverter : IUnsignedValueConverter<ulong>
@@ -47,8 +54,10 @@ namespace BlueDove.Collections.Heaps
             return BitOperations.Log2(last ^ value) + 1;
         }
 
-        public int BufferSize() 
+        public int BufferSize()
             => 65;
+
+        public int Compare(ulong x, ulong y) => x.CompareTo(y);
     }
 
     public readonly struct LongValueConverter : IUnsignedValueConverter<long>
@@ -57,11 +66,13 @@ namespace BlueDove.Collections.Heaps
         {
             Debug.Assert(value >= last);
             if (last == value) return 0;
-            return BitOperations.Log2((ulong)(last ^ value)) + 1;
+            return BitOperations.Log2((ulong) (last ^ value)) + 1;
         }
 
-        public int BufferSize() 
+        public int BufferSize()
             => 64;
+
+        public int Compare(long x, long y) => x.CompareTo(y);
     }
 
     public readonly struct FloatValueConverter : IUnsignedValueConverter<float>
@@ -75,8 +86,10 @@ namespace BlueDove.Collections.Heaps
             return BitOperations.Log2(Unsafe.As<float, uint>(ref last) ^ Unsafe.As<float, uint>(ref value)) + 1;
         }
 
-        public int BufferSize() 
-            => 33;
+        public int BufferSize()
+            => 32;
+
+        public int Compare(float x, float y) => x.CompareTo(y);
     }
 
     public readonly struct DoubleValueConverter : IUnsignedValueConverter<double>
@@ -90,19 +103,35 @@ namespace BlueDove.Collections.Heaps
             return BitOperations.Log2(Unsafe.As<double, ulong>(ref last) ^ Unsafe.As<double, ulong>(ref value)) + 1;
         }
 
-        public int BufferSize() 
-            => 65;
+        public int BufferSize()
+            => 64;
+
+        public int Compare(double x, double y) => x.CompareTo(y);
     }
-    
+
     public readonly struct KeyValueConverter<TKey, TValue, TConverter> : IUnsignedValueConverter<(TKey, TValue)>
         where TConverter : unmanaged, IUnsignedValueConverter<TKey> where TKey : IComparable<TKey>
     {
-        public int GetIndex((TKey, TValue) last, (TKey, TValue) value) 
+        public int GetIndex((TKey, TValue) last, (TKey, TValue) value)
             => default(TConverter).GetIndex(last.Item1, value.Item1);
 
-        public int BufferSize() 
+        public int BufferSize()
             => default(TConverter).BufferSize();
+
+        public int Compare((TKey, TValue) x, (TKey, TValue) y) 
+            => default(TConverter).Compare(x.Item1, y.Item1);
     }
+
+    public readonly struct FloatIntValueConverter : IUnsignedValueConverter<KeyValuePair<float,int>>
+    {
+        public int GetIndex(KeyValuePair<float, int> last, KeyValuePair<float, int> value) 
+            => default(FloatValueConverter).GetIndex(last.Key, value.Key);
+
+        public int BufferSize() => default(FloatValueConverter).BufferSize();
+        public int Compare(KeyValuePair<float, int> x, KeyValuePair<float, int> y) 
+            => x.Key.CompareTo(y.Key);
+    }
+
 
 #if NET_STANDARD_2_0
     internal static class BitOperations
@@ -111,7 +140,6 @@ namespace BlueDove.Collections.Heaps
         public static int Log2(uint value) => 31 - math.lzcnt(value);
         public static int Log2(ulong value) => 63 - math.lzcnt(value);
 #else
-
 //copied form corefx
 /*
 The MIT License (MIT)

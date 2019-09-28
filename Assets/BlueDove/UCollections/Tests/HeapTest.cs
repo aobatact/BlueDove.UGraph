@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using BlueDove.Collections.Heaps;
+using BlueDove.UCollections.Native;
 using Unity.Collections;
 using UnityEngine.Assertions;
 using UnityEngine.TestTools;
@@ -12,7 +13,7 @@ namespace BlueDove.UCollections.Tests
         private static IEnumerable HeapHead<T>(IHeap<T> heap, Func<T> randomFactory, int count)
             where T : IComparable<T>
         {
-            Assert.AreEqual(0, heap.Count,"This test should start with empty heap");
+            Assert.AreEqual(0, heap.Count, "This test should start with empty heap");
             var first = randomFactory();
             heap.Push(first);
             Assert.AreEqual(first, heap.Peek());
@@ -33,7 +34,7 @@ namespace BlueDove.UCollections.Tests
         private static IEnumerable CheckSorted<T>(IHeap<T> heap, Func<T> randomFactory, int count)
             where T : IComparable<T>
         {
-            Assert.AreEqual(0, heap.Count,"This test should start with empty heap");
+            Assert.AreEqual(0, heap.Count, "This test should start with empty heap");
             for (var i = 0; i < count; i++)
             {
                 heap.Push(randomFactory());
@@ -49,9 +50,10 @@ namespace BlueDove.UCollections.Tests
                 x = n;
                 yield return null;
             }
+
             Assert.IsFalse(heap.TryPeek(out _));
         }
-        
+
         [UnityTest]
         public IEnumerator HeapHead_NativeBinary_Temp_Int()
         {
@@ -72,14 +74,13 @@ namespace BlueDove.UCollections.Tests
             {
                 var random = new Random();
                 var prev = 0;
-                foreach (var o in HeapHead(heap, 
+                foreach (var o in HeapHead(heap,
                     () => prev == int.MaxValue ? int.MaxValue : prev = random.Next(prev, int.MaxValue), 10))
                 {
                     yield return o;
                 }
             }
         }
-        
         [UnityTest]
         public IEnumerator HeapHead_Radix_Temp_Int()
         {
@@ -94,7 +95,6 @@ namespace BlueDove.UCollections.Tests
                 }
             }
         }
-        
         [UnityTest]
         public IEnumerator CheckSorted_NativeRadix_Temp_Int()
         {
@@ -109,7 +109,6 @@ namespace BlueDove.UCollections.Tests
                 }
             }
         }
-        
         [UnityTest]
         public IEnumerator CheckSorted_NativeBinary_Temp_Int()
         {

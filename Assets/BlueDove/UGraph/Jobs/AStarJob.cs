@@ -3,126 +3,185 @@ using BlueDove.Collections.Heaps;
 using BlueDove.UGraph.Algorithm;
 using Unity.Jobs;
 using Unity.Collections;
+
 // ReSharper disable ImpureMethodCallOnReadonlyValueField
 
 namespace BlueDove.UGraph.Jobs
 {
-    public struct NativeRefDictionary<TKey,TValue>
-    {
-        public ref TValue GetOrAddValueRef(TKey key) => throw new NotImplementedException();
-        public bool TryGetValue(TKey key, out TValue value) => throw new NotImplementedException();
-    }
-    
-    
-    public struct AStarJob<TNode, TEndNode, TEdge, TGraph, THeap, TGFunc> : IJob
-        where TNode : unmanaged, IEquatable<TNode>, IIDHolder
-        where TEdge : unmanaged, IEdge<TNode>, IEquatable<TEdge>
-        where TGraph : unmanaged, IReadOnlyNativeGraph<TNode, TEdge>
+    /// <summary>
+    /// AStar PathFinding Job
+    /// </summary>
+    /// <typeparam name="TNode">Node Type in Graph</typeparam>
+    /// <typeparam name="TEndNode">End node condition of <see cref="TNode"/>>, might be <see cref="TNode"/>></typeparam>
+    /// <typeparam name="TEdge">Edge Type in Graph</typeparam>
+    /// <typeparam name="TGraph">Graph Type to Search</typeparam>
+    /// <typeparam name="THeap">Priority Queue Used inside</typeparam>
+    /// <typeparam name="TGFunc">Cost function to calculate the edge cost</typeparam>
+    public readonly struct AStarJob<TNode, TEndNode, TEdge, TGraph, THeap, TGFunc> : IJob
+        where TNode : struct, IEquatable<TNode>, IIDHolder
+        where TEdge : struct, IEdge<TNode>, IEquatable<TEdge>
+        where TGraph : struct, IReadOnlyNativeGraph<TNode, TEdge>
         where THeap : struct, IHeap<int>
-        where TGFunc : unmanaged, ICostFunc<TEdge>
-        where TEndNode : unmanaged, IEquatable<TNode>, ICostFunc<TNode>
+        where TGFunc : struct, ICostFunc<TEdge>
+        where TEndNode : struct, IEquatable<TNode>, ICostFunc<TNode>
     {
-        private readonly TGraph graph;
-        private readonly TGFunc costFunc;
-        private readonly THeap heap;
-        private readonly NativeRefDictionary<int, AStarNode> nodeList;
-        private readonly TNode start;
-        private readonly TEndNode end;
-        public readonly NativeList<TEdge> ReversePath;
+        private readonly TGraph _graph;
+        private readonly TGFunc _costFunc;
+        private readonly THeap _heap;
+        private readonly TNode _start;
+        private readonly TEndNode _end;
+        private readonly NativeList<TEdge> _reversePath;
+        private readonly Allocator _allocator;
 
+        /// <summary>
+        /// Creating a job
+        /// </summary>
+        /// <param name="graph">Graph to Search</param>
+        /// <param name="costFunc">Cost Function to evaluate the edge cost</param>
+        /// <param name="heap">PriorityQueue used inside</param>
+        /// <param name="start">Node to Start</param>
+        /// <param name="end">Node Condition to finish</param>
+        /// <param name="reversePath">Container for Reversed Result</param>
+        /// <param name="allocator">Allocator for inner Collection.</param>
         public AStarJob(TGraph graph, TGFunc costFunc, THeap heap, TNode start, TEndNode end,
-            NativeList<TEdge> path, NativeRefDictionary<int, AStarNode> nodeList)
+            NativeList<TEdge> reversePath, Allocator allocator = Allocator.TempJob)
         {
-            this.graph = graph;
-            this.costFunc = costFunc;
-            this.heap = heap;
-            this.nodeList = nodeList;
-            this.start = start;
-            this.end = end;
-            ReversePath = path;
+            _graph = graph;
+            _costFunc = costFunc;
+            _heap = heap;
+            _start = start;
+            _end = end;
+            _reversePath = reversePath;
+            _allocator = allocator;
         }
 
-        public AStarJob(TGraph graph, TGFunc costFunc, THeap heap, TNode start, TEndNode end,
-            Allocator allocator)
-            : this(graph, costFunc, heap, start, end, new NativeList<TEdge>(allocator), default){}
-
+        /// <summary>
+        /// Run the AStar
+        /// </summary>
         public void Execute()
         {
-            var openList = new NativeHashMap<int, TNode>(32, Allocator.TempJob);
+            var openList = new NativeHashMap<int, AStarNode>(32, _allocator);
             TNode current;
-            if (end.Equals(current = start))
+            if (_end.Equals(current = _start))
                 return;
-            var min = new AStarNode(current);
+            var min = new AStarNode(current, true);
+            openList.TryAdd(current.ID, min);
             while (true)
             {
                 Loop:
-                //update cost connected to current  
-                foreach (var edge in graph.GetEdges(current))
+                //update node cost connected to current node  
+                var edges = _graph.GetEdges(current, _allocator);
+                for (var i = 0; i < edges.Length; i++)
                 {
-                    var ot = edge.GetOther<TNode, TNode, TEdge>(current);
-                    if (end.Equals(ot))
+                    var edge = edges[i];
+                    var otherSide = edge.GetOther<TNode, TNode, TEdge>(current);
+                    if (_end.Equals(otherSide))
                     {
-                        min = new AStarNode(ot) {RootPath = edge};
+                        min = new AStarNode(otherSide) {RootPath = edge};
                         goto Found;
                     }
-                    ref var aNode = ref nodeList.GetOrAddValueRef(ot.ID);
-                    if (aNode.ID == 0)
-                        aNode = new AStarNode(ot);
-                    else if (aNode.CurrentG <= min.CurrentG) 
-                        continue;
-                    var ng = min.CurrentG + costFunc.Calc(edge);
-                    var nf = ng + end.Calc(ot);
+
+                    if (openList.TryGetValue(otherSide.ID, out var aNode))
+                    {
+                        if (aNode.CurrentG <= min.CurrentG) continue;
+                    }
+                    else
+                    {
+                        aNode.Priority = float.MaxValue;
+                    }
+
+                    var ng = min.CurrentG + _costFunc.Calc(edge);
+                    var nf = ng + _end.Calc(otherSide);
+                    // if the cost might be higher to use this route, drop it.
                     if (aNode.Priority <= nf) continue;
-                    aNode.Priority = nf;
-                    aNode.CurrentG = ng;
-                    aNode.Closed = false;
-                    aNode.RootPath = edge;
-                    heap.Push(ot.ID);
+                    //remove if GetOrAddValueRef
+                    openList[otherSide.ID] = new AStarNode(otherSide, ng, nf, false, edge);
+                    _heap.Push(otherSide.ID);
                 }
+
+                if (_graph.RequireFreeArray)
+                    edges.Dispose();
                 //get the next node from open list
-                while (heap.Count > 0)
+                while (true)
                 {
-                    var id = heap.Pop();
-                    if (nodeList.TryGetValue(id, out min))
+                    if (_heap.Count > 0 && openList.TryGetValue(_heap.Pop(), out min))
                     {
                         //if the next node is closed, skip it.
                         if (min.Closed)
                             continue;
                         min.Closed = true;
-                        current = min.Value;
+                        openList[(current = min.Value).ID] = min;
                         goto Loop;
                     }
+
                     goto NotFound;
                 }
-                goto NotFound;
             }
+
             Found:
             while (true)
             {
                 var root = min.RootPath;
                 if (root.Equals(default))
                     break;
-                ReversePath.Add(root);
+                _reversePath.Add(root);
                 var n = root.GetOther<TNode, TNode, TEdge>(min.Value);
-                nodeList.TryGetValue(n.ID, out min);
+                openList.TryGetValue(n.ID, out min);
             }
 
             //return min.Path;
             NotFound: ;
             openList.Dispose();
         }
-        
-        public struct AStarNode : IIDHolder
+
+        private struct AStarNode : IIDHolder
         {
+            /// <summary>
+            /// Node to represent
+            /// </summary>
             public TNode Value { get; }
+
             public int ID => Value.ID;
-            public float CurrentG { get; set; }
+
+            /// <summary>
+            /// Current Cost from the Start
+            /// </summary>
+            public float CurrentG { get; }
+
+            /// <summary>
+            /// Current Priority Value (Lower is Prior)
+            /// </summary>
             public float Priority { get; set; }
+
+            /// <summary>
+            /// Check whether it can be the next node to search neighbor
+            /// </summary>
             public bool Closed { get; set; }
-            //public ImmutableList<TEdge> Path { get; set; }
+
+            /// <summary>
+            /// Edge toward the start node
+            /// </summary>
             public TEdge RootPath { get; set; }
 
-            public AStarNode(TNode current) : this() { Value = current; }
+            public AStarNode(TNode current) : this()
+            {
+                Value = current;
+            }
+
+            public AStarNode(TNode current, bool closed) : this()
+            {
+                Value = current;
+                Closed = closed;
+            }
+
+            public AStarNode(TNode value, float currentG, float priority, bool closed, TEdge rootPath)
+            {
+                Value = value;
+                CurrentG = currentG;
+                Priority = priority;
+                Closed = closed;
+                RootPath = rootPath;
+            }
         }
     }
 }

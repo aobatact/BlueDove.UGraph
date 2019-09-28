@@ -25,6 +25,18 @@ namespace BlueDove.UGraph
                 return edge.Source;
             }
         }
+
+        public static TNode GetOther<TNode, TEdge>(this TEdge edge, TNode node)
+            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode>
+                => GetOther<TNode, TNode, TEdge>(edge, node);
+    }
+
+    /// <summary>
+    /// Mark Node for Debug
+    /// </summary>
+    public interface IMarkable
+    {
+        void Mark(Color color);
     }
 
 }

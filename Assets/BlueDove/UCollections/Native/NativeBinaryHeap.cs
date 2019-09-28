@@ -6,7 +6,7 @@ using Unity.Collections.LowLevel.Unsafe;
 using Unity.Jobs;
 using Unity.Mathematics;
 
-namespace BlueDove.UCollections
+namespace BlueDove.UCollections.Native
 {
     [NativeContainer]
     public unsafe struct NativeBinaryHeap<T> : IHeap<T>, IDisposable where T : unmanaged, IComparable<T>
@@ -204,7 +204,7 @@ namespace BlueDove.UCollections
             // will check that no jobs are writing to the container).
             DisposeSentinel.Clear(ref m_DisposeSentinel);
 #endif
-            var jobHandle = new DisposeJob { Container = this }.Schedule(inputDeps);
+            var jobHandle = new DisposeJob {Container = this}.Schedule(inputDeps);
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.Release(m_Safety);
 #endif
