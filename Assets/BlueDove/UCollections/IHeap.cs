@@ -1,4 +1,4 @@
-namespace BlueDove.Collections.Heaps
+namespace BlueDove.UCollections
 {
     public interface IHeap<T>
     {

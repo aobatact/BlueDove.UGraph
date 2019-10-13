@@ -1,10 +1,8 @@
 using System;
-using BlueDove.Collections.Heaps;
+using BlueDove.UCollections;
 using BlueDove.UGraph.Algorithm;
 using Unity.Jobs;
 using Unity.Collections;
-
-// ReSharper disable ImpureMethodCallOnReadonlyValueField
 
 namespace BlueDove.UGraph.Jobs
 {

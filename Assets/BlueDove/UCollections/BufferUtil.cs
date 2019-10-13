@@ -1,8 +1,7 @@
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
-namespace BlueDove.Collections.Heaps
+namespace BlueDove.UCollections
 {
     public static class BufferUtil
     {

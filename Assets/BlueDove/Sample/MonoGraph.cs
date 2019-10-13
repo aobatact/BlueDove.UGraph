@@ -13,12 +13,10 @@ namespace BlueDove.Sample
     {
         private int idCounter;
 
-        [FormerlySerializedAs("prefab")] [SerializeField]
-        private MonoNode nodePrefab;
-
+        [SerializeField] private MonoNode nodePrefab;
         [SerializeField] private MonoEdge edgePrefab;
         private DictionarySlim<MonoNode, List<MonoEdge>> _dictionary;
-        [SerializeField] private bool _autoCreateEdges;
+        [SerializeField] private bool autoCreateEdges;
         [SerializeField] private float minDistSq = 20f;
         [SerializeField] private float minAngle = 30f;
         [SerializeField] private Color edgeSourceDefault;
@@ -135,7 +133,7 @@ namespace BlueDove.Sample
             _dictionary = new DictionarySlim<MonoNode, List<MonoEdge>>();
             idCounter = 0;
             InitChildNodes();
-            if (_autoCreateEdges)
+            if (autoCreateEdges)
             {
                 CreateEdges(minDistSq, minAngle, (x, y) =>
                 {

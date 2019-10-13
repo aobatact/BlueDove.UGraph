@@ -6,13 +6,14 @@ using System.Runtime.CompilerServices;
 using Unity.Mathematics;
 #endif
 
-namespace BlueDove.Collections.Heaps
+namespace BlueDove.UCollections
 {
     public interface IUnsignedValueConverter<in T> : IComparer<T>
     {
         int GetIndex(T last, T value);
         int BufferSize();
     }
+
     public readonly struct UintValueConverter : IUnsignedValueConverter<uint>
     {
         public int GetIndex(uint last, uint value)

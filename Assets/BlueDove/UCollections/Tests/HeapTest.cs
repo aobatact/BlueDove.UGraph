@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using BlueDove.Collections.Heaps;
 using BlueDove.UCollections.Native;
 using Unity.Collections;
 using UnityEngine.Assertions;
@@ -81,6 +80,7 @@ namespace BlueDove.UCollections.Tests
                 }
             }
         }
+
         [UnityTest]
         public IEnumerator HeapHead_Radix_Temp_Int()
         {
@@ -95,6 +95,7 @@ namespace BlueDove.UCollections.Tests
                 }
             }
         }
+
         [UnityTest]
         public IEnumerator CheckSorted_NativeRadix_Temp_Int()
         {
@@ -109,6 +110,7 @@ namespace BlueDove.UCollections.Tests
                 }
             }
         }
+
         [UnityTest]
         public IEnumerator CheckSorted_NativeBinary_Temp_Int()
         {

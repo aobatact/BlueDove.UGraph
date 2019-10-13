@@ -13006,7 +13006,7 @@ MonoBehaviour:
     type: 3}
   edgePrefab: {fileID: 5400715894565908326, guid: c436e83cc1cdabe41805478a9933e35d,
     type: 3}
-  _autoCreateEdges: 1
+  autoCreateEdges: 1
   minDistSq: 20
   minAngle: 30
   edgeSourceDefault: {r: 94, g: 21, b: 21, a: 1}
