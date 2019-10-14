@@ -1,61 +1,106 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
-using BlueDove.Sample;
 using BlueDove.UCollections;
 using BlueDove.UCollections.Native;
+using BlueDove.UGraph;
 using BlueDove.UGraph.Algorithm;
 using Unity.Collections;
 using UnityEngine;
 
-public class PathSearcher : MonoBehaviour
+namespace BlueDove.Sample
 {
-
-    public MonoNode StartPoint;
-    public MonoNode EndPoint;
-    public MonoGraph Graph;
-    public bool SearchNextFrame;
-
-    private void Start()
+    public class PathSearcher : MonoBehaviour
     {
-        SearchNextFrame = true;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (SearchNextFrame)
+        public MonoNode StartPoint;
+        public MonoNode EndPoint;
+        public MonoGraph Graph;
+        public bool SearchNextFrame;
+        public bool ChangeStart;
+        
+        private void Start()
         {
-            SearchNextFrame = false;
-            Graph.ResetNodeColors();
-            Graph.ResetEdgeColors();
-            SetColorOnPath();
+            SearchNextFrame = true;
+            ChangeStart = true;
         }
-    }
 
-    ImmutableList<MonoEdge> SearchNodes()
-    {
-        var heap = new NativeRadixHeap<KeyValuePair<float,int>,FloatIntValueConverter>(Allocator.Persistent);
-        //var heap = new RadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>();
-        var immutableList = AStarAlgorithm
-            .Compute<MonoNode, MonoEdge, MonoGraph, NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>,
-                MonoGraph, MonoNode>(Graph,heap, Graph, StartPoint, EndPoint);
-        heap.Dispose();
-        return immutableList;
-    }
-
-    void SetColorOnPath()
-    {
-        var immutableList = SearchNodes();
-        if (immutableList.IsEmpty)
+        // Update is called once per frame
+        void Update()
         {
-            Debug.LogWarning("Root Not Found");
-        }
-        else
-        {
-            foreach (var edge in immutableList)
+            if (SearchNextFrame)
             {
-                edge.Renderer.startColor = Color.green;
-                edge.Renderer.endColor = Color.cyan;
+                SearchNextFrame = false;
+                Graph.ResetNodeColors();
+                Graph.ResetEdgeColors();
+                SetColorOnPath();
+            }
+        }
+
+        private void OnEnable()
+        {
+            var selector = GetComponent<SelectRay>();
+            if (selector != null)
+                selector.HitAction += ChangeTarget;
+        }
+
+        private void OnDisable()
+        {
+            var selector = GetComponent<SelectRay>();
+            if (selector != null)
+                selector.HitAction -= ChangeTarget;
+        }
+
+        ImmutableList<MonoEdge> SearchNodes()
+        {
+            var heap = new NativeRadixHeap<KeyValuePair<float,int>,FloatIntValueConverter>(Allocator.Persistent);
+            //var heap = new RadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>();
+            var immutableList = AStarAlgorithm
+                .Compute<MonoNode, MonoEdge, MonoGraph, NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>,
+                    MonoGraph, MonoNode>(Graph,heap, Graph, StartPoint, EndPoint);
+            heap.Dispose();
+            return immutableList;
+        }
+
+        void SetColorOnPath()
+        {
+            var immutableList = SearchNodes();
+            if (immutableList.IsEmpty)
+            {
+                if(StartPoint.Equals(EndPoint))
+                    Debug.Log("Start == End");
+                else
+                    Debug.LogWarning("Root Not Found");
+            }
+            else
+            {
+                foreach (var edge in immutableList)
+                {
+                    edge.Renderer.startColor = Color.green;
+                    edge.Renderer.endColor = Color.cyan;
+                }
+            }
+        }
+
+        void ChangeTarget(RaycastHit raycastHit)
+        {
+            var node = raycastHit.transform.GetComponent<MonoNode>();
+            if (node != null)
+            {
+                if (ChangeStart)
+                {
+                    ChangeStart = false;
+                    StartPoint = node;
+                    if (node is IMarkable m)
+                    {
+                        m.Mark(Color.magenta);
+                    }
+                }
+                else
+                {
+                    ChangeStart = true;
+                    EndPoint = node;
+                    SearchNextFrame = true;
+                }
             }
         }
     }
