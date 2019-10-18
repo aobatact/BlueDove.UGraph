@@ -11,7 +11,11 @@ namespace BlueDove.Sample
         public InputAction XYMover;
         private Vector3 xyDiff;
         private bool xyChanged;
+        private float speedSq = 1/3f;
+
         public InputAction zMover;
+        public float minZoomSize = 1f;
+        private float _currentZoomSizeSq;
         private Camera _camera;
         
         private void Awake()
@@ -25,6 +29,7 @@ namespace BlueDove.Sample
         private void Start()
         {
             _camera = GetComponent<Camera>();
+            _currentZoomSizeSq = Mathf.Sqrt(_camera.orthographicSize) * speedSq;
         }
 
         private void OnEnable()
@@ -61,7 +66,7 @@ namespace BlueDove.Sample
             {
                 var t = transform;
                 var pos = t.position;
-                pos += xyDiff;
+                pos += xyDiff * _currentZoomSizeSq;
                 t.position = pos;
                 //yield return new WaitForSeconds(1/62f);
                 yield return null;
@@ -73,7 +78,21 @@ namespace BlueDove.Sample
             var f = context.ReadValue<float>();
             if (f != 0)
             {
-                _camera.orthographicSize = Mathf.Max(1f, _camera.orthographicSize + f);
+                var zoomSizeSq = _currentZoomSizeSq / speedSq;
+                var currentZoomSize = zoomSizeSq * zoomSizeSq;
+                var n = currentZoomSize + f;
+                if (n < minZoomSize)
+                {
+                    if(currentZoomSize == minZoomSize)
+                        return;
+                    n = minZoomSize;
+                    _currentZoomSizeSq = Mathf.Sqrt(minZoomSize) * speedSq;
+                }
+                else
+                {
+                    _currentZoomSizeSq = Mathf.Sqrt(n) * speedSq;
+                }
+                _camera.orthographicSize = n;
             }
         }
     }

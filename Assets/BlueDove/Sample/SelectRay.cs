@@ -29,7 +29,7 @@ namespace BlueDove.Sample
             Ray.Disable();
         }
 
-        void Selected(InputAction.CallbackContext context)
+        private void Selected(InputAction.CallbackContext context)
         {
            //Debug.Log("Clicked");
             var point = Ray.ReadValue<Vector2>();

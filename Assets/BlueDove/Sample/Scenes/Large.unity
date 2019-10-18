@@ -3114,18 +3114,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 729505142}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &331379018 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5211609895683973744, guid: a5923c0691ecdca43954a6a35ffa5b12,
-    type: 3}
-  m_PrefabInstance: {fileID: 729505142}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c5fda547ef15ef41a856742f7ecdf1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &336662198
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9363,10 +9351,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d958fe7e1b0925e41a9786e35d009481, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartPoint: {fileID: 1385420445}
-  EndPoint: {fileID: 331379018}
+  StartPoint: {fileID: 0}
+  EndPoint: {fileID: 0}
   Graph: {fileID: 1382761379}
-  SearchNextFrame: 1
   ChangeStart: 0
 --- !u!4 &1032970241
 Transform:
@@ -10002,7 +9989,7 @@ MonoBehaviour:
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
-    - m_Name: 1D Axis
+    - m_Name: QR
       m_Id: 4900d9a7-744e-4a22-a311-6d43cd367328
       m_Path: 1DAxis
       m_Interactions: 
@@ -10026,6 +10013,15 @@ MonoBehaviour:
       m_Groups: 
       m_Action: Z Mover
       m_Flags: 8
+    - m_Name: 
+      m_Id: f7fcc51a-e60c-4c25-86d5-e03c2ad69886
+      m_Path: <Mouse>/scroll/y
+      m_Interactions: 
+      m_Processors: Scale(factor=0.01),Invert
+      m_Groups: 
+      m_Action: Z Mover
+      m_Flags: 0
+  minZoomSize: 1
 --- !u!4 &1104217280 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
@@ -13433,18 +13429,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1118288877}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1385420445 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5211609895683973744, guid: a5923c0691ecdca43954a6a35ffa5b12,
-    type: 3}
-  m_PrefabInstance: {fileID: 1118288877}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c5fda547ef15ef41a856742f7ecdf1d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1386018430 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,

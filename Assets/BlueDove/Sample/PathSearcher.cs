@@ -15,25 +15,18 @@ namespace BlueDove.Sample
         public MonoNode StartPoint;
         public MonoNode EndPoint;
         public MonoGraph Graph;
-        public bool SearchNextFrame;
         public bool ChangeStart;
         
         private void Start()
         {
-            SearchNextFrame = true;
             ChangeStart = true;
         }
-
-        // Update is called once per frame
-        void Update()
+        
+        private void ResetColorOnPath()
         {
-            if (SearchNextFrame)
-            {
-                SearchNextFrame = false;
-                Graph.ResetNodeColors();
-                Graph.ResetEdgeColors();
-                SetColorOnPath();
-            }
+            Graph.ResetNodeColors();
+            Graph.ResetEdgeColors();
+            SetColorOnPath();
         }
 
         private void OnEnable()
@@ -52,13 +45,17 @@ namespace BlueDove.Sample
 
         ImmutableList<MonoEdge> SearchNodes()
         {
-            var heap = new NativeRadixHeap<KeyValuePair<float,int>,FloatIntValueConverter>(Allocator.Persistent);
-            //var heap = new RadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>();
-            var immutableList = AStarAlgorithm
-                .Compute<MonoNode, MonoEdge, MonoGraph, NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>,
-                    MonoGraph, MonoNode>(Graph,heap, Graph, StartPoint, EndPoint);
-            heap.Dispose();
-            return immutableList;
+            if(StartPoint == null || EndPoint == null) return ImmutableList<MonoEdge>.Empty;
+            using (var heap =
+                new NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>(Allocator.Persistent))
+            {
+                //var heap = new RadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>();
+                var immutableList = AStarAlgorithm
+                    .Compute<MonoNode, MonoEdge, MonoGraph,
+                        NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>,
+                        MonoGraph, MonoNode>(Graph, heap, Graph, StartPoint, EndPoint);
+                return immutableList;
+            }
         }
 
         void SetColorOnPath()
@@ -99,7 +96,15 @@ namespace BlueDove.Sample
                 {
                     ChangeStart = true;
                     EndPoint = node;
-                    SearchNextFrame = true;
+                    ResetColorOnPath();
+                }
+            }
+            else
+            {
+                var edge = raycastHit.transform.GetComponent<MonoEdge>();
+                if (edge != null)
+                {
+                    Debug.Log($"Selected Edge : {edge.name}");
                 }
             }
         }
