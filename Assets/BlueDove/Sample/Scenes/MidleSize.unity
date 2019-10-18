@@ -2294,7 +2294,7 @@ MonoBehaviour:
   StartPoint: {fileID: 1385420445}
   EndPoint: {fileID: 331379018}
   Graph: {fileID: 1382761379}
-  SearchNextFrame: 1
+  ChangeStart: 0
 --- !u!4 &1032970241
 Transform:
   m_ObjectHideFlags: 0
@@ -3252,7 +3252,7 @@ MonoBehaviour:
     type: 3}
   autoCreateEdges: 1
   minDistSq: 20
-  minAngle: 30
+  minAngle: 70
   edgeSourceDefault: {r: 94, g: 21, b: 21, a: 1}
   edgeTargetDefault: {r: 209, g: 209, b: 209, a: 1}
 --- !u!4 &1382761380

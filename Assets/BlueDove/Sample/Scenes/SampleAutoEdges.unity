@@ -399,7 +399,7 @@ MonoBehaviour:
   StartPoint: {fileID: 512975430}
   EndPoint: {fileID: 258303591}
   Graph: {fileID: 1382761379}
-  SearchNextFrame: 1
+  ChangeStart: 0
 --- !u!4 &1032970241
 Transform:
   m_ObjectHideFlags: 0
@@ -593,12 +593,12 @@ PrefabInstance:
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.68
+      value: -5.41
       objectReference: {fileID: 0}
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.88
+      value: 0.13
       objectReference: {fileID: 0}
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}
@@ -680,9 +680,9 @@ MonoBehaviour:
     type: 3}
   edgePrefab: {fileID: 5400715894565908326, guid: c436e83cc1cdabe41805478a9933e35d,
     type: 3}
-  _autoCreateEdges: 1
+  autoCreateEdges: 1
   minDistSq: 20
-  minAngle: 30
+  minAngle: 20
   edgeSourceDefault: {r: 94, g: 21, b: 21, a: 1}
   edgeTargetDefault: {r: 209, g: 209, b: 209, a: 1}
 --- !u!4 &1382761380
@@ -793,12 +793,12 @@ PrefabInstance:
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.4
+      value: -5.39
       objectReference: {fileID: 0}
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.02
+      value: 2.33
       objectReference: {fileID: 0}
     - target: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
         type: 3}

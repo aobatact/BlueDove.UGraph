@@ -11,10 +11,10 @@
         "XrDevice": ""
     },
     "EditorVersion": {
-        "FullVersion": "2019.2.0f1 (20c1667945cf)",
-        "DateSeconds": 1563521100,
+        "FullVersion": "2019.2.6f1 (fe82a0e88406)",
+        "DateSeconds": 1568163396,
         "Branch": "2019.2/staging",
-        "RevisionValue": 2146662
+        "RevisionValue": 16679584
     },
     "BuildSettings": {
         "Platform": "WindowsEditor",
@@ -51,7 +51,7 @@
         "ScriptingRuntimeVersion": ""
     },
     "TestSuite": "",
-    "StartTime": 1568632700681.233,
+    "StartTime": 1569666115549.413,
     "EndTime": 0.0,
     "Results": []
 }

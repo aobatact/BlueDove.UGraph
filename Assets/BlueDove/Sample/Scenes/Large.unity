@@ -9915,7 +9915,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1102618083}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.1, y: 0, z: -20}
+  m_LocalPosition: {x: 10, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -13144,9 +13144,9 @@ MonoBehaviour:
     type: 3}
   autoCreateEdges: 1
   minDistSq: 20
-  minAngle: 30
-  edgeSourceDefault: {r: 94, g: 21, b: 21, a: 1}
-  edgeTargetDefault: {r: 209, g: 209, b: 209, a: 1}
+  minAngle: 5
+  edgeSourceDefault: {r: 0.4555619, g: 0.6509434, b: 0.19344072, a: 1}
+  edgeTargetDefault: {r: 101.5708, g: 122.2703, b: 159.50378, a: 1}
 --- !u!4 &1382761380
 Transform:
   m_ObjectHideFlags: 0
