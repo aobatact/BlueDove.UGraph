@@ -11,8 +11,7 @@ namespace BlueDove.Sample
 {
     public class MonoGraph : MonoBehaviour, IGraph<MonoNode, MonoEdge>, ICostFunc<MonoEdge>
     {
-        private int idCounter;
-
+        private IDPublisherS _idPublisher;
         [SerializeField] private MonoNode nodePrefab;
         [SerializeField] private MonoEdge edgePrefab;
         private DictionarySlim<MonoNode, List<MonoEdge>> _dictionary;
@@ -25,7 +24,7 @@ namespace BlueDove.Sample
         public MonoNode CreateNewNode(Vector3 pos)
         {
             var node = Instantiate(nodePrefab, pos, Quaternion.identity);
-            node.SetID(++idCounter);
+            node.SetID(_idPublisher.Publish());
             _dictionary.GetOrAddValueRef(node) = new List<MonoEdge>();
             return node;
         }
@@ -39,17 +38,11 @@ namespace BlueDove.Sample
             return edge;
         }
 
-        private void Awake()
-        {
-            //edgeSourceDefault = new Color32(0x5E, 0x15, 0x15, byte.MaxValue);
-            //edgeTargetDefault = new Color32(0xD1, 0xD1, 0xD1, byte.MaxValue);
-        }
-        
         // Start is called before the first frame update
         void Start()
         {
             _dictionary = new DictionarySlim<MonoNode, List<MonoEdge>>();
-            idCounter = 0;
+            _idPublisher = default(IDPublisherS);
             InitChildNodes();
             if (autoCreateEdges)
             {
@@ -73,7 +66,7 @@ namespace BlueDove.Sample
             var nodes = GetComponentsInChildren<MonoNode>();
             foreach (var node in nodes)
             {
-                node.SetID(++idCounter);
+                node.SetID(_idPublisher.Publish());
                 _dictionary.GetOrAddValueRef(node) = new List<MonoEdge>();
             }
         }
@@ -158,7 +151,7 @@ namespace BlueDove.Sample
                 if (edge.Source.ID == 0)
                 {
                     Debug.LogWarning($"No ID Edge Node {edge.Source}");
-                    edge.Source.SetID(++idCounter);
+                    edge.Source.SetID(_idPublisher.Publish());
                 }
 
                 s = new List<MonoEdge>();
