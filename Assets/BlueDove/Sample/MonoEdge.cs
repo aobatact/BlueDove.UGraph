@@ -12,7 +12,8 @@ namespace BlueDove.Sample
         [SerializeField] private MonoNode source;
         [SerializeField] private MonoNode target;
         private Vector3[] pos;
-
+        private MeshCollider _collider;
+        
         public LineRenderer Renderer => _renderer;
         
         // Start is called before the first frame update
@@ -20,6 +21,8 @@ namespace BlueDove.Sample
         {
             if (_renderer == null)
                 _renderer = GetComponent<LineRenderer>();
+            if (_collider == null) 
+                _collider = GetComponent<MeshCollider>();
             pos = new Vector3[2];
             ReDraw();
         }
@@ -28,7 +31,7 @@ namespace BlueDove.Sample
         {
             //var pos = new Vector3[2];
             //_renderer.GetPositions(pos);
-            if (!(pos[0] == Source.transform.position) || !(pos[1] == Target.transform.position))
+            if (!(_renderer is null) && (pos[0] != Source.transform.position || pos[1] != Target.transform.position))
             {
                 ReDraw();
             }
@@ -36,11 +39,13 @@ namespace BlueDove.Sample
 
         private void ReDraw()
         {
-            if (Source != null && Target != null)
+            if (!(Source is null) && !(Target is null))
             {
                 pos[0] = Source.transform.position;
                 pos[1] = Target.transform.position;
                 _renderer.SetPositions(pos);
+                if (!(_collider is null))
+                    SetMesh2Collider();
             }
             else
             {
@@ -48,6 +53,13 @@ namespace BlueDove.Sample
             }
         }
 
+        private void SetMesh2Collider()
+        {
+            var mesh = _collider.sharedMesh ?? new Mesh();
+            _renderer.BakeMesh(mesh);
+            _collider.sharedMesh = mesh;
+        }
+        
         // Update is called once per frame
 
         public MonoNode Source
@@ -64,7 +76,7 @@ namespace BlueDove.Sample
 
         public bool Equals(MonoEdge other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (other is null) return false;
             if (ReferenceEquals(this, other)) return true;
             return (Source.Equals(other.Source) && Target.Equals(other.Target)) || 
                    (Source.Equals(other.Target) && Target.Equals(other.Source));
@@ -72,7 +84,7 @@ namespace BlueDove.Sample
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
             return Equals((MonoEdge) obj);
