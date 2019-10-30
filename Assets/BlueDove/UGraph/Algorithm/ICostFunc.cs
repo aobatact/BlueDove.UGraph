@@ -4,4 +4,9 @@ namespace BlueDove.UGraph.Algorithm
     {
         float Calc(T value);
     }
+
+    public struct DijkstraHeuristicFunc<T> : ICostFunc<T>
+    {
+        public float Calc(T value) => 0f;
+    }
 }

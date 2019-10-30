@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace BlueDove.UGraph
 {
@@ -10,21 +8,12 @@ namespace BlueDove.UGraph
         TNode Target { get; }
     }
 
-    public static class EdgeEx
+    /// <summary>
+    /// Mark Node for Debug
+    /// </summary>
+    public interface IMarkable
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TNode GetOther<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike node)
-            where TNodeLike : IEquatable<TNode>
-            where TEdge : IEdge<TNode>
-        {
-            if (node.Equals(edge.Source))
-                return edge.Target;
-            else
-            {
-                Debug.Assert(node.Equals(edge.Target));
-                return edge.Source;
-            }
-        }
+        void Mark(Color color);
     }
 
 }
