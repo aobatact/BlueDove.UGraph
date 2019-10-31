@@ -17,7 +17,7 @@ namespace BlueDove.Sample
         [SerializeField] private MonoEdge edgePrefab;
 
         //private DictionarySlim<MonoNode, List<MonoEdge>> _dictionary;
-        private BiDirectionalGraph<MonoNode, MonoEdge> _graph;
+        private BidirectionalGraph<MonoNode, MonoEdge> _graph;
         [SerializeField] private bool autoCreateEdges;
         [SerializeField] private float minDistSq;
         [SerializeField] private float minAngle;
@@ -44,7 +44,7 @@ namespace BlueDove.Sample
         void Start()
         {
             _idPublisher = default;
-            _graph = new BiDirectionalGraph<MonoNode, MonoEdge>(4);
+            _graph = new BidirectionalGraph<MonoNode, MonoEdge>(4);
             var nodes = InitChildNodes();
             if (autoCreateEdges)
             {

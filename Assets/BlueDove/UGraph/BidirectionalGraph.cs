@@ -5,18 +5,18 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct BiDirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>>
+    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>>
         where TNode : IEquatable<TNode>, IIDHolder
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {
         private readonly DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> _dictionary;
 
-        public BiDirectionalGraph(int initCapacity)
+        public BidirectionalGraph(int initCapacity)
         {
             _dictionary = new DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>>(initCapacity);
         }
         
-        public BiDirectionalGraph(DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> dictionary)
+        public BidirectionalGraph(DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> dictionary)
         {
             _dictionary = dictionary;
         }
