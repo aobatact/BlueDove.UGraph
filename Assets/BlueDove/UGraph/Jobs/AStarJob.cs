@@ -72,7 +72,7 @@ namespace BlueDove.UGraph.Jobs
                 for (var i = 0; i < edges.Length; i++)
                 {
                     var edge = edges[i];
-                    var otherSide = edge.GetOther<TNode, TNode, TEdge>(current);
+                    var otherSide = edge.Target;
                     if (_end.Equals(otherSide))
                     {
                         min = new AStarNode(otherSide) {RootPath = edge};
