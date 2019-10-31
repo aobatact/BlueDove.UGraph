@@ -134,7 +134,7 @@ namespace BlueDove.UCollections
     }
 
 
-#if NET_STANDARD_2_0
+#if NET_STANDARD_2_0 && ! NET_STANDARD_2_1
     internal static class BitOperations
     {
 #if UNITY_2019_2_OR_NEWER

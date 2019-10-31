@@ -6,7 +6,7 @@ using Unity.Collections.LowLevel.Unsafe;
 
 namespace BlueDove.UCollections.Native
 {
-    public static class NativeUcEx
+    public static class NativeUCollectionEx
     {
         public static unsafe void* Alloc<T>(T value, Allocator allocator)
             where T : struct

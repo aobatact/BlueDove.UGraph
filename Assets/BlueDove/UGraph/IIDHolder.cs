@@ -8,7 +8,7 @@ namespace BlueDove.UGraph
         int ID { get; }
     }
 
-    internal struct IDPublisherBase
+    public struct IDPublisherS
     {
         private int _count;
 
@@ -18,7 +18,7 @@ namespace BlueDove.UGraph
 
     public class IDPublisher
     {
-        private IDPublisherBase b;
+        private IDPublisherS b;
         public int Publish() => b.Publish();
     }
 

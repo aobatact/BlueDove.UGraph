@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Microsoft.Collections.Extensions;
 using Unity.Collections;
 using UnityEngine;
@@ -9,19 +10,45 @@ namespace BlueDove.UGraph
 {
     public static partial class GraphUtils
     {
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TNode GetOther<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike node)
+            where TNodeLike : IEquatable<TNode>
+            where TEdge : IEdge<TNode>
+        {
+            if (node.Equals(edge.Source))
+                return edge.Target;
+            Debug.Assert(node.Equals(edge.Target));
+            return edge.Source;
+        }
+
+        public static TNode GetOther<TNode, TEdge>(this TEdge edge, TNode node)
+            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
+            GetOther<TNode, TNode, TEdge>(edge, node);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool GetDirection<TNode, TEdge>(this TEdge edge, TNode source)
+            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
+            GetDirection<TNode, TNode, TEdge>(edge, source);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool GetDirection<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike source)
+            where TNodeLike : IEquatable<TNode> where TEdge : IEdge<TNode> =>
+            source.Equals(edge.Source);
+
+        //TODO There are some irregular angle yet. 
         public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, float minDistSq, float minAngle,
-            Func<TNode, TNode, TEdge> func) 
+            Func<TNode, TNode, TEdge> func)
             where TNode : IEquatable<TNode>, IIDHolder, IVector3Node
             where TEdge : IEdge<TNode>
             where TGraph : IGraph<TNode, TEdge>
         {
             var nodes = graph.GetNodes().ToArray();
-            var addDict = new DictionarySlim<TNode, List<(TNode node,float dist)>>();
+            var addDict = new DictionarySlim<TNode, List<(TNode node, float dist)>>();
             for (var i = 0; i < nodes.Length; i++)
             {
                 var nodeA = nodes[i];
                 ref var list = ref addDict.GetOrAddValueRef(nodeA);
-                if (list == null) list = new List<(TNode,float)>();
+                if (list == null) list = new List<(TNode, float)>();
                 for (var j = i + 1; j < nodes.Length; j++)
                 {
                     var nodeB = nodes[j];
@@ -30,16 +57,16 @@ namespace BlueDove.UGraph
                     if (distSq > minDistSq)
                         continue;
                     var dist = Mathf.Sqrt(distSq);
-                    list.Add((nodeB,dist));
+                    list.Add((nodeB, dist));
                     ref var bList = ref addDict.GetOrAddValueRef(nodeB);
-                    if (bList == null) bList = new List<(TNode,float)>();
+                    if (bList == null) bList = new List<(TNode, float)>();
                     bList.Add((nodeA, dist));
                 }
             }
 
             var cos = 2 * (Mathf.Cos(minAngle) + 1f);
             var removeStack = new Stack<int>();
-            for (int i = 0; i < nodes.Length; i++)
+            for (var i = 0; i < nodes.Length; i++)
             {
                 removeStack.Clear();
                 var nodeA = nodes[i];
@@ -51,7 +78,7 @@ namespace BlueDove.UGraph
                     addDict.TryGetValue(nodeB, out var listB);
                     for (var k = 0; k < j; k++) // test ab
                     {
-                        if(removeStack.Contains(k))
+                        if (removeStack.Contains(k))
                             continue;
                         var (nodeC, ac) = listA[k];
                         for (var l = 0; l < listB.Count; l++)
@@ -81,18 +108,20 @@ namespace BlueDove.UGraph
                                 var x = ac + bc;
                                 if (x * x < ab * ab + cos * ac * bc)
                                 {
-                                    //remove ab
+                                    //reserve to remove ab
                                     removeStack.Push(j);
                                     goto EndB;
                                 }
                             }
+
                             break;
                         }
                     }
+
                     EndB: ;
                 }
 
-                while (removeStack.Count > 0)
+                while (removeStack.Count > 0) //remove reserved ab
                 {
                     var rm = removeStack.Pop();
                     var (nodeN, _) = listA[rm];
