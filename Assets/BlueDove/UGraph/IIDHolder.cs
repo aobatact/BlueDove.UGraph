@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 
 namespace BlueDove.UGraph
@@ -20,4 +21,15 @@ namespace BlueDove.UGraph
         private IDPublisherBase b;
         public int Publish() => b.Publish();
     }
+
+    public struct IDComparer<TID> : IComparer<TID> where TID : IIDHolder
+    {
+        public int Compare(TID x, TID y) => (x?.ID ?? 0).CompareTo(y?.ID ?? 0);
+    }
+    
+    public struct IDComparerS<TID> : IComparer<TID> where TID : struct, IIDHolder
+    {
+        public int Compare(TID x, TID y) => x.ID.CompareTo(y.ID );
+    }
+
 }

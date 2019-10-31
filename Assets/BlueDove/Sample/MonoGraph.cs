@@ -16,6 +16,7 @@ namespace BlueDove.Sample
         [SerializeField] private MonoNode nodePrefab;
         [SerializeField] private MonoEdge edgePrefab;
         private DictionarySlim<MonoNode, List<MonoEdge>> _dictionary;
+        [SerializeField] private bool autoCreateNodes;
         [SerializeField] private bool autoCreateEdges;
         [SerializeField] private float minDistSq;
         [SerializeField] private float minAngle;

@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Collections.Extensions;
+using Unity.Collections;
 using UnityEngine;
 
 namespace BlueDove.UGraph
 {
-    public static class GraphUtils
+    public static partial class GraphUtils
     {
         public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, float minDistSq, float minAngle,
             Func<TNode, TNode, TEdge> func) 
@@ -118,13 +119,5 @@ namespace BlueDove.UGraph
                 }
             }
         }
-
-        private static float CosSmall(float x, float y, float shortest)
-        {
-            var n = (x * x + y * y - shortest * shortest) /
-                    (2 * x * y);
-            return n;
-        }
-                
     }
 }
