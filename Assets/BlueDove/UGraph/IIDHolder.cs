@@ -22,14 +22,21 @@ namespace BlueDove.UGraph
         public int Publish() => b.Publish();
     }
 
-    public struct IDComparer<TID> : IComparer<TID> where TID : IIDHolder
+    public struct IDComparer<TID> : IComparer<TID>, IEqualityComparer<TID> where TID : IIDHolder
     {
         public int Compare(TID x, TID y) => (x?.ID ?? 0).CompareTo(y?.ID ?? 0);
-    }
-    
-    public struct IDComparerS<TID> : IComparer<TID> where TID : struct, IIDHolder
-    {
-        public int Compare(TID x, TID y) => x.ID.CompareTo(y.ID );
+
+        public bool Equals(TID x, TID y) => (x?.ID ?? 0) == (y?.ID ?? 0);
+
+        public int GetHashCode(TID obj) => obj.ID;
     }
 
+    public struct IDComparerS<TID> : IComparer<TID>, IEqualityComparer<TID> where TID : struct, IIDHolder
+    {
+        public int Compare(TID x, TID y) => x.ID.CompareTo(y.ID);
+
+        public bool Equals(TID x, TID y) => x.ID.Equals(y.ID);
+
+        public int GetHashCode(TID obj) => obj.ID;
+    }
 }

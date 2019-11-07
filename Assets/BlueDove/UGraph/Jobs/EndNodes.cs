@@ -33,6 +33,7 @@ namespace BlueDove.UGraph.Jobs
                 list.Add(node);
             }
             _nodes = list.AsArray();
+            _nodes.Sort<TNode, IDComparerS<TNode>>(default);
             _needDispose = true;
         }
         
