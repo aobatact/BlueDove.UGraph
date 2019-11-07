@@ -44,7 +44,15 @@ namespace BlueDove.Sample
         {
             _idPublisher = default;
             _graph = new BidirectionalGraph<MonoNode, MonoEdge>(4);
-            var nodes = InitChildNodes();
+            MonoNode[] nodes;
+            if (autoCreateNodes)
+            {
+                nodes = null;
+            }
+            else
+            {
+                nodes = InitChildNodes();
+            }
             if (autoCreateEdges)
             {
                 GraphUtils.CreateEdges(this, nodes, minDistSq,
