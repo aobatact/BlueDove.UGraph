@@ -47,6 +47,17 @@ namespace BlueDove.UGraph
 
         public bool AcceptDuplicateEdges => false;
 
+        public bool AddNode(TNode node) 
+        { 
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<TEdge>();
+                return true;
+            }
+            return false;
+        }
+
         public bool AddEdge(TEdge edge)
         {
             ref var edgesS = ref _dictionary.GetOrAddValueRef(edge.Source);
@@ -105,6 +116,17 @@ namespace BlueDove.UGraph
         public IEnumerable<TNode> GetNodes() => _dictionary.Select(x => x.Key);
 
         public bool AcceptDuplicateEdges => false;
+
+        public bool AddNode(TNode node) 
+        { 
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<TEdge>();
+                return true;
+            }
+            return false;
+        }
 
         public bool AddEdge(TEdge edge)
         {

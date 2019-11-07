@@ -133,6 +133,17 @@ namespace BlueDove.Sample
 
         public bool AcceptDuplicateEdges => false;
 
+        public bool AddNode(MonoNode node)
+        {            
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<MonoEdge>();
+                return true;
+            }
+            return false;
+        }
+
         public bool AddEdge(MonoEdge edge)
             => AddEdge(edge, false);
 
