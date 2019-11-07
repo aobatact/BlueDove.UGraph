@@ -1,7 +1,8 @@
 {
     "name": "BlueDove.UGraph",
     "references": [
-        "GUID:a4b99c517ed80b74e9a076b63baa8f6e"
+        "GUID:a4b99c517ed80b74e9a076b63baa8f6e",
+        "GUID:e0cd26848372d4e5c891c569017e11f1"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -9,5 +10,6 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
+    "defineConstraints": [],
     "versionDefines": []
 }
