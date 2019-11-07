@@ -3,38 +3,55 @@ using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Mathematics;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace BlueDove.UGraph
 {
     public static partial class GraphUtils
     {
-        public static void GeneratePoints(NativeArray<float3> array, float xSize, float ySize, int xCount, int yCount)
+        public static void GeneratePoints(NativeArray<float3> array, float2 size, int2 count, uint seed = 12)
         {
-            if (array.Length != xCount * yCount)
+            if (array.Length != count.x * count.y)
             {
                 throw new ArgumentException();
             }
             var v = float2.zero;
-            var b = new float2(xSize, ySize);
-            for (int i = 0; i < xCount; i++)
+            var ran = new Random(seed);
+            for (int i = 0, k = -1; i < count.x; i++)
             {
-                v.x = (xCount + 0.5f) * xSize;
-                for (int j = 0; j < yCount; j++)
+                for (int j = 0; j < count.y; j++)
                 {
-                    v.y = (yCount + 0.5f) * ySize;
-                    var n = noise.srdnoise(v).yz;
-                    var m = math.normalize(n) * b;
-                    array[j] = new float3(m, 0f);
+                    var xy = v + ran.NextFloat2(size);
+                    //var xy = noise.cellular2x2(v);
+                    array[++k] = new float3(xy, 0f);
+                    v.y += size.y;
                 }
+                v.y = 0f;
+                v.x += size.x;
             }
         }
 
-        public static NativeArray<T> GeneratePoints<T>(float xSize, float ySize, int xCount, int yCount,
-            Func<float3, T> func, Allocator allocator) where T : struct
+        public static NativeArray<T> GeneratePoints<T>(float2 size, int2 count, Func<float3, T> func, 
+            Allocator allocator, uint seed = 12) where T : struct
         {
-            var nVec = new NativeArray<float3>(xCount * yCount, Allocator.Temp);
-            var nar = new NativeArray<T>(xCount * yCount, allocator);
-            GeneratePoints(nVec,xSize,ySize,xCount,yCount);
+            var length = count.x * count.y;
+            var nVec = new NativeArray<float3>(length, Allocator.Temp);
+            var nar = new NativeArray<T>(length, allocator);
+            GeneratePoints(nVec, size, count, seed);
+            for (int i = 0; i < nVec.Length; i++)
+            {
+                nar[i] = func(nVec[i]);
+            }
+            nVec.Dispose();
+            return nar;
+        }
+        
+        public static T[] GeneratePoints<T>(float2 size, int2 count, Func<float3, T> func, uint seed = 12)
+        {            
+            var length = count.x * count.y;
+            var nVec = new NativeArray<float3>(length, Allocator.Temp);
+            var nar = new T[length];
+            GeneratePoints(nVec, size, count, seed);
             for (int i = 0; i < nVec.Length; i++)
             {
                 nar[i] = func(nVec[i]);
