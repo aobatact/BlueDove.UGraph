@@ -6,26 +6,45 @@ using BlueDove.UGraph.Algorithm;
 using Unity.Mathematics;
 using UnityEngine;
 using BiEdge = BlueDove.UGraph.DirectionalEdge<BlueDove.Sample.MonoNode, BlueDove.Sample.MonoEdge>;
+
 namespace BlueDove.Sample
 {
     public class MonoGraph : MonoBehaviour, IGraph<MonoNode, BiEdge>, ICostFunc<BiEdge>
     {
         private IDPublisherS _idPublisher;
         private BidirectionalGraph<MonoNode, MonoEdge> _graph;
-        [SerializeField] private MonoNode nodePrefab;
-        [SerializeField] private MonoEdge edgePrefab;
-        [SerializeField] private Color edgeSourceDefault;
-        [SerializeField] private Color edgeTargetDefault;
+
+        [SerializeField]
+        private MonoNode nodePrefab;
+
+        [SerializeField]
+        private MonoEdge edgePrefab;
+
+        [SerializeField]
+        private Color edgeSourceDefault;
+
+        [SerializeField]
+        private Color edgeTargetDefault;
+
         
+        [SerializeField]
+        private bool autoCreateNodes;
+
+        [SerializeField]
+        private Vector2 cellSize;
+
+        [SerializeField]
+        private Vector2Int cellCount;
+
         
-        
-        [SerializeField] private bool autoCreateNodes;
-        [SerializeField]private Vector2 cellSize;
-        [SerializeField]private Vector2Int cellCount;
-        
-        [SerializeField] private bool autoCreateEdges;
-        [SerializeField] private float minDistSq;
-        [SerializeField] private float minAngle;
+        [SerializeField]
+        private bool autoCreateEdges;
+
+        [SerializeField]
+        private float minDistSq;
+
+        [SerializeField]
+        private float minAngle;
 
         public MonoNode CreateNewNode(Vector3 pos)
         {
@@ -48,21 +67,15 @@ namespace BlueDove.Sample
         {
             _idPublisher = default;
             _graph = new BidirectionalGraph<MonoNode, MonoEdge>(4);
-            MonoNode[] nodes;
-            if (autoCreateNodes)
-            {
-                nodes = GraphUtils.GeneratePoints(cellSize, Unsafe.As<Vector2Int,int2>(ref cellCount), x =>
+            var nodes = autoCreateNodes
+                ? GraphUtils.GeneratePoints(cellSize, Unsafe.As<Vector2Int, int2>(ref cellCount), x =>
                 {
                     var node = Instantiate(nodePrefab, Unsafe.As<float3, Vector3>(ref x), Quaternion.identity,
-                            transform);
+                        transform);
                     node.ID = _idPublisher.Publish();
                     return node;
-                });
-            }
-            else
-            {
-                nodes = InitChildNodes();
-            }
+                })
+                : InitChildNodes();
             if (autoCreateEdges)
             {
                 GraphUtils.CreateEdges(this, nodes, minDistSq,
