@@ -29,8 +29,6 @@ namespace BlueDove.Sample
 
         void Update()
         {
-            //var pos = new Vector3[2];
-            //_renderer.GetPositions(pos);
             if (!(_renderer is null) && (pos[0] != Source.transform.position || pos[1] != Target.transform.position))
             {
                 ReDraw();

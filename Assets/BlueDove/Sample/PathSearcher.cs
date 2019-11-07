@@ -7,7 +7,7 @@ using BlueDove.UGraph;
 using BlueDove.UGraph.Algorithm;
 using Unity.Collections;
 using UnityEngine;
-
+using BiEdge = BlueDove.UGraph.DirectionalEdge<BlueDove.Sample.MonoNode, BlueDove.Sample.MonoEdge>;
 namespace BlueDove.Sample
 {
     public class PathSearcher : MonoBehaviour
@@ -43,15 +43,15 @@ namespace BlueDove.Sample
                 selector.HitAction -= ChangeTarget;
         }
 
-        ImmutableList<MonoEdge> SearchNodes()
+        ImmutableList<BiEdge> SearchNodes()
         {
-            if(StartPoint == null || EndPoint == null) return ImmutableList<MonoEdge>.Empty;
+            if(StartPoint == null || EndPoint == null) return ImmutableList<BiEdge>.Empty;
             using (var heap =
                 new NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>(Allocator.Persistent))
             {
                 //var heap = new RadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>();
                 var immutableList = AStarAlgorithm
-                    .Compute<MonoNode, MonoEdge, MonoGraph,
+                    .Compute<MonoNode, BiEdge, MonoGraph,
                         NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>,
                         MonoGraph, MonoNode>(Graph, heap, Graph, StartPoint, EndPoint);
                 return immutableList;
@@ -72,8 +72,8 @@ namespace BlueDove.Sample
             {
                 foreach (var edge in immutableList)
                 {
-                    edge.Renderer.startColor = Color.green;
-                    edge.Renderer.endColor = Color.cyan;
+                    edge.Edge.Renderer.startColor = Color.green;
+                    edge.Edge.Renderer.endColor = Color.cyan;
                 }
             }
         }

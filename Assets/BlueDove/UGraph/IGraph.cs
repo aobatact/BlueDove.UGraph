@@ -18,7 +18,9 @@ namespace BlueDove.UGraph
         bool AcceptDuplicateEdges { get; }
         bool AddNode(TNode node);
         bool AddEdge(TEdge edge);
+        bool RemoveNode(TNode node);
         bool RemoveEdge(TEdge edge);
+        void Clear();
     }
     
     public interface IReadOnlyNativeGraph<TNode, TEdge> where TNode : struct where TEdge : struct, IEdge<TNode>

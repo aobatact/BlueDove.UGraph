@@ -36,13 +36,13 @@ namespace BlueDove.UGraph
             source.Equals(edge.Source);
 
         //TODO There are some irregular angle yet. 
-        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, float minDistSq, float minAngle,
+        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float minDistSq, float minAngle,
             Func<TNode, TNode, TEdge> func)
             where TNode : IEquatable<TNode>, IIDHolder, IVector3Node
             where TEdge : IEdge<TNode>
             where TGraph : IGraph<TNode, TEdge>
         {
-            var nodes = graph.GetNodes().ToArray();
+            //var nodes = graph.GetNodes().ToArray();
             var addDict = new DictionarySlim<TNode, List<(TNode node, float dist)>>();
             for (var i = 0; i < nodes.Length; i++)
             {

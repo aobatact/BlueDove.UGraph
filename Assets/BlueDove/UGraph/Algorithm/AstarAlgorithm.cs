@@ -57,7 +57,7 @@ namespace BlueDove.UGraph.Algorithm
                 //update cost connected to current  
                 foreach (var edge in graph.GetEdges(current))
                 {
-                    var ot = edge.GetOther<TNode, TNode, TEdge>(current);
+                    var ot = edge.Target;
                     if (end.Equals(ot))
                     {
                         current.MarkColor(NodeType.Close);
