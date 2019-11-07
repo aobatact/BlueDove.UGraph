@@ -11,11 +11,18 @@ namespace BlueDove.Sample
     [RequireComponent(typeof(MeshFilter))]
     public class MonoNode : MonoBehaviour, IIDHolder, IEquatable<MonoNode>, ICostFunc<MonoNode>, IMarkable, IDisposable, IVector3Node
     {
-        public int ID { get; private set; }
+        private int _id;
 
-        internal void SetID(int id)
+        public int ID
         {
-            if (ID == 0) ID = id;
+            get => _id;
+            set
+            {
+                if(_id == 0)
+                    _id = value;
+                else
+                    throw new InvalidOperationException();
+            }
         }
 
         public bool Equals(MonoNode other)

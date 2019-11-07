@@ -16,6 +16,7 @@ namespace BlueDove.UGraph
     public interface IGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge> where TEdge : IEdge<TNode>
     {
         bool AcceptDuplicateEdges { get; }
+        bool AddNode(TNode node);
         bool AddEdge(TEdge edge);
         bool RemoveNode(TNode node);
         bool RemoveEdge(TEdge edge);

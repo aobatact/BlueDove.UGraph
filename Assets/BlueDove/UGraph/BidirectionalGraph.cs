@@ -62,6 +62,17 @@ namespace BlueDove.UGraph
         public bool AddEdge(TEdge edge)
             => AddEdge(new DirectionalEdge<TNode, TEdge>(edge, true));
 
+        public bool AddNode(TNode node)
+        {
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<DirectionalEdge<TNode, TEdge>>();
+                return true;
+            }
+            return false;
+        }
+
         public bool AddEdge(DirectionalEdge<TNode, TEdge> edge)
         {
             ref var listS = ref _dictionary.GetOrAddValueRef(edge.Source);

@@ -1,33 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using BlueDove.UGraph;
 using BlueDove.UGraph.Algorithm;
-using Microsoft.Collections.Extensions;
+using Unity.Mathematics;
 using UnityEngine;
-using UnityEngine.Serialization;
 using BiEdge = BlueDove.UGraph.DirectionalEdge<BlueDove.Sample.MonoNode, BlueDove.Sample.MonoEdge>;
+
 namespace BlueDove.Sample
 {
     public class MonoGraph : MonoBehaviour, IGraph<MonoNode, BiEdge>, ICostFunc<BiEdge>
     {
         private IDPublisherS _idPublisher;
-        [SerializeField] private MonoNode nodePrefab;
-
-        [SerializeField] private MonoEdge edgePrefab;
-
-        //private DictionarySlim<MonoNode, List<MonoEdge>> _dictionary;
         private BidirectionalGraph<MonoNode, MonoEdge> _graph;
-        [SerializeField] private bool autoCreateEdges;
-        [SerializeField] private float minDistSq;
-        [SerializeField] private float minAngle;
-        [SerializeField] private Color edgeSourceDefault;
-        [SerializeField] private Color edgeTargetDefault;
+
+        [SerializeField]
+        private MonoNode nodePrefab;
+
+        [SerializeField]
+        private MonoEdge edgePrefab;
+
+        [SerializeField]
+        private Color edgeSourceDefault;
+
+        [SerializeField]
+        private Color edgeTargetDefault;
+
+        
+        [SerializeField]
+        private bool autoCreateNodes;
+
+        [SerializeField]
+        private Vector2 cellSize;
+
+        [SerializeField]
+        private Vector2Int cellCount;
+
+        
+        [SerializeField]
+        private bool autoCreateEdges;
+
+        [SerializeField]
+        private float minDistSq;
+
+        [SerializeField]
+        private float minAngle;
 
         public MonoNode CreateNewNode(Vector3 pos)
         {
             var node = Instantiate(nodePrefab, pos, Quaternion.identity);
-            node.SetID(_idPublisher.Publish());
+            node.ID = _idPublisher.Publish();
             return node;
         }
 
@@ -45,7 +67,15 @@ namespace BlueDove.Sample
         {
             _idPublisher = default;
             _graph = new BidirectionalGraph<MonoNode, MonoEdge>(4);
-            var nodes = InitChildNodes();
+            var nodes = autoCreateNodes
+                ? GraphUtils.GeneratePoints(cellSize, Unsafe.As<Vector2Int, int2>(ref cellCount), x =>
+                {
+                    var node = Instantiate(nodePrefab, Unsafe.As<float3, Vector3>(ref x), Quaternion.identity,
+                        transform);
+                    node.ID = _idPublisher.Publish();
+                    return node;
+                })
+                : InitChildNodes();
             if (autoCreateEdges)
             {
                 GraphUtils.CreateEdges(this, nodes, minDistSq,
@@ -69,7 +99,7 @@ namespace BlueDove.Sample
             var nodes = GetComponentsInChildren<MonoNode>();
             foreach (var node in nodes)
             {
-                node.SetID(_idPublisher.Publish());
+                node.ID = _idPublisher.Publish();
             }
 
             return nodes;
@@ -90,24 +120,18 @@ namespace BlueDove.Sample
 
         public bool AcceptDuplicateEdges => false;
 
-        public bool AddEdge(BiEdge edge)
-        {
-            return _graph.AddEdge(edge);
-        }
+
+        public bool AddNode(MonoNode node) { return _graph.AddNode(node); }
+
+        public bool AddEdge(BiEdge edge) => _graph.AddEdge(edge);
 
         public bool RemoveNode(MonoNode node) => _graph.RemoveNode(node);
 
-        public bool RemoveEdge(BiEdge edge)
-        {
-            return _graph.RemoveEdge(edge);
-        }
+        public bool RemoveEdge(BiEdge edge) => _graph.RemoveEdge(edge);
 
         public void Clear() => _graph.Clear();
 
-        private void OnDestroy()
-        {
-            Clear();
-        }
+        private void OnDestroy() => Clear();
 
         public float Calc(BiEdge value)
             => Vector3.Distance(value.Source.transform.position, value.Target.transform.position);
