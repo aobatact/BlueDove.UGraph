@@ -36,6 +36,9 @@ namespace BlueDove.Sample
         [SerializeField]
         private Vector2Int cellCount;
 
+        [SerializeField]
+        private uint seed = 12;
+
         
         [SerializeField]
         private bool autoCreateEdges;
@@ -74,7 +77,7 @@ namespace BlueDove.Sample
                         transform);
                     node.ID = _idPublisher.Publish();
                     return node;
-                })
+                }, seed)
                 : InitChildNodes();
             if (autoCreateEdges)
             {

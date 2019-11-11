@@ -5,7 +5,7 @@ namespace BlueDove.UGraph
     public readonly struct DirectionalEdge<TNode, TEdge> : IEdge<TNode>, IEquatable<DirectionalEdge<TNode, TEdge>>
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {
-        public DirectionalEdge(TEdge edge, bool direction)
+        public DirectionalEdge(TEdge edge, bool direction = true)
         {
             Edge = edge;
             Direction = direction;
