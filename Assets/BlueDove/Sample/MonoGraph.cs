@@ -14,40 +14,21 @@ namespace BlueDove.Sample
         private IDPublisherS _idPublisher;
         private BidirectionalGraph<MonoNode, MonoEdge> _graph;
 
-        [SerializeField]
-        private MonoNode nodePrefab;
+        [SerializeField] private MonoNode nodePrefab;
+        [SerializeField] private MonoEdge edgePrefab;
+        [SerializeField] private Color edgeSourceDefault;
+        [SerializeField] private Color edgeTargetDefault;
 
-        [SerializeField]
-        private MonoEdge edgePrefab;
 
-        [SerializeField]
-        private Color edgeSourceDefault;
+        [SerializeField] private bool autoCreateNodes;
+        [SerializeField] private Vector2 cellSize;
+        [SerializeField] private Vector2Int cellCount;
+        [SerializeField] private uint seed = 12;
 
-        [SerializeField]
-        private Color edgeTargetDefault;
 
-        
-        [SerializeField]
-        private bool autoCreateNodes;
-
-        [SerializeField]
-        private Vector2 cellSize;
-
-        [SerializeField]
-        private Vector2Int cellCount;
-
-        [SerializeField]
-        private uint seed = 12;
-
-        
-        [SerializeField]
-        private bool autoCreateEdges;
-
-        [SerializeField]
-        private float minDistSq;
-
-        [SerializeField]
-        private float minAngle;
+        [SerializeField] private bool autoCreateEdges;
+        [SerializeField] private float minDistSq;
+        [SerializeField] private float minAngle;
 
         public MonoNode CreateNewNode(Vector3 pos)
         {
@@ -117,14 +98,16 @@ namespace BlueDove.Sample
             }
         }
 
-
         public MonoNode GetNodeByID(int id)
             => _graph.GetNodes().FirstOrDefault(x => x.ID == id);
 
         public bool AcceptDuplicateEdges => false;
 
 
-        public bool AddNode(MonoNode node) { return _graph.AddNode(node); }
+        public bool AddNode(MonoNode node)
+        {
+            return _graph.AddNode(node);
+        }
 
         public bool AddEdge(BiEdge edge) => _graph.AddEdge(edge);
 
