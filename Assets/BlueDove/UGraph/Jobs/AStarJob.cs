@@ -123,7 +123,7 @@ namespace BlueDove.UGraph.Jobs
                 if (root.Equals(default))
                     break;
                 _reversePath.Add(root);
-                var n = root.GetOther<TNode, TNode, TEdge>(min.Value);
+                var n = root.Target;
                 openList.TryGetValue(n.ID, out min);
             }
 

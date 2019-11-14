@@ -11,21 +11,6 @@ namespace BlueDove.UGraph
     public static partial class GraphUtils
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TNode GetOther<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike node)
-            where TNodeLike : IEquatable<TNode>
-            where TEdge : IEdge<TNode>
-        {
-            if (node.Equals(edge.Source))
-                return edge.Target;
-            Debug.Assert(node.Equals(edge.Target));
-            return edge.Source;
-        }
-
-        public static TNode GetOther<TNode, TEdge>(this TEdge edge, TNode node)
-            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            GetOther<TNode, TNode, TEdge>(edge, node);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool GetDirection<TNode, TEdge>(this TEdge edge, TNode source)
             where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
             GetDirection<TNode, TNode, TEdge>(edge, source);
