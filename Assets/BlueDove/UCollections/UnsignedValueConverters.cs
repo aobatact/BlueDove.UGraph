@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-#if UNITY_2019_2_OR_NEWER
+#if UNITY_2019_2_OR_NEWER && USE_MATH
 using Unity.Mathematics;
 #endif
 
-namespace BlueDove.Collections.Heaps
+namespace BlueDove.UCollections
 {
     public interface IUnsignedValueConverter<in T> : IComparer<T>
     {
@@ -133,11 +133,11 @@ namespace BlueDove.Collections.Heaps
             => x.Key.CompareTo(y.Key);
     }
 
-
-#if NET_STANDARD_2_0
+    
+#if NET_STANDARD_2_0 && ! NET_STANDARD_2_1
     internal static class BitOperations
     {
-#if UNITY_2019_2_OR_NEWER
+#if UNITY_2019_2_OR_NEWER && USE_MATH
         public static int Log2(uint value) => 31 - math.lzcnt(value);
         public static int Log2(ulong value) => 63 - math.lzcnt(value);
 #else

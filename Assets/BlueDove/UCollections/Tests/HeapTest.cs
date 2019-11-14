@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using BlueDove.Collections.Heaps;
 #if NativeCollection
 using BlueDove.UCollections.Native;
 using Unity.Collections;
@@ -27,7 +26,6 @@ namespace BlueDove.UCollections.Tests
                 {
                     min = next;
                 }
-
                 heap.Push(next);
                 Assert.AreEqual(min, heap.Peek());
                 yield return null;
