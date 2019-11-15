@@ -1,16 +1,24 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace BlueDove.Sample
 {
-    public class SelectRay : SelectRayBase
+    public class MultiSelectRay : SelectRayBase
     {
-        public event Action<RaycastHit> HitAction;
+        public event Action<RaycastHit[], int> HitAction;
+        private RaycastHit[] _rayCache;
+
+        public int CacheSize
+        {
+            get => _rayCache.Length;
+            set => _rayCache = new RaycastHit[value];
+        }
 
         private void Awake()
         {
             Click.performed += Selected;
+            _rayCache = new RaycastHit[4];
         }
 
         private void OnEnable()
@@ -32,13 +40,12 @@ namespace BlueDove.Sample
 
         private void Selected(InputAction.CallbackContext context)
         {
-           //Debug.Log("Clicked");
             var point = Ray.ReadValue<Vector2>();
             var ray = rayCamera.ScreenPointToRay(point);
-            if (Physics.Raycast(ray, out var hit, maxDistance))
+            var raycastHitCount = Physics.RaycastNonAlloc(ray, _rayCache, maxDistance);
+            if (raycastHitCount > 0)
             {
-                //Debug.Log("Hit");
-                HitAction?.Invoke(hit);
+                HitAction?.Invoke(_rayCache, raycastHitCount);
             }
         }
     }

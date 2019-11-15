@@ -73,9 +73,7 @@ namespace BlueDove.UGraph
             => _dictionary.Remove(node);
 
         public bool RemoveEdge(TEdge edge)
-        {
-            return _dictionary.TryGetValue(edge.Source, out var listS) && listS.Remove(edge);
-        }
+            => _dictionary.TryGetValue(edge.Source, out var listS) && listS.Remove(edge);
 
         public void Clear() => _dictionary.Clear();
     }

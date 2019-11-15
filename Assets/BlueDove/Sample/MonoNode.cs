@@ -43,9 +43,7 @@ namespace BlueDove.Sample
         }
 
         public override int GetHashCode()
-        {
-            return ID;
-        }
+            => ID;
 
         public void Mark(Color color)
         {

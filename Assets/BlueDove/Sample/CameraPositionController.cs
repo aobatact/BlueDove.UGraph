@@ -83,6 +83,7 @@ namespace BlueDove.Sample
                 var n = currentZoomSize + f;
                 if (n < minZoomSize)
                 {
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if(currentZoomSize == minZoomSize)
                         return;
                     n = minZoomSize;

@@ -53,7 +53,8 @@ namespace BlueDove.Sample
 
         private void SetMesh2Collider()
         {
-            var mesh = _collider.sharedMesh ?? new Mesh();
+            var sharedMesh = _collider.sharedMesh;
+            var mesh = sharedMesh ? sharedMesh : new Mesh();
             _renderer.BakeMesh(mesh);
             _collider.sharedMesh = mesh;
         }

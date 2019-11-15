@@ -12,12 +12,21 @@ namespace BlueDove.UGraph
     {
         private int _count;
 
+        public IDPublisherS(int currentCount) 
+            => _count = currentCount;
+
         public int Publish()
             => Interlocked.Increment(ref _count);
     }
 
     public class IDPublisher
     {
+        public IDPublisher()
+            : this(1){}
+
+        public IDPublisher(int currentCount)
+            => b = new IDPublisherS(currentCount);
+
         private IDPublisherS b;
         public int Publish() => b.Publish();
     }

@@ -22,7 +22,7 @@ namespace BlueDove.UGraph
         bool RemoveEdge(TEdge edge);
         void Clear();
     }
-    
+
     public interface IReadOnlyNativeGraph<TNode, TEdge> where TNode : struct where TEdge : struct, IEdge<TNode>
     {
         bool Contains(TNode node);

@@ -78,26 +78,32 @@ namespace BlueDove.Sample
             }
         }
 
+        void OnNodeSelected(MonoNode node)
+        {                
+            if (ChangeStart)
+            {
+                ChangeStart = false;
+                StartPoint = node;
+                if (node is IMarkable m)
+                {
+                    m.Mark(Color.magenta);
+                }
+            }
+            else
+            {
+                ChangeStart = true;
+                EndPoint = node;
+                ResetColorOnPath();
+            }
+            
+        }
+
         void ChangeTarget(RaycastHit raycastHit)
         {
             var node = raycastHit.transform.GetComponent<MonoNode>();
             if (node != null)
             {
-                if (ChangeStart)
-                {
-                    ChangeStart = false;
-                    StartPoint = node;
-                    if (node is IMarkable m)
-                    {
-                        m.Mark(Color.magenta);
-                    }
-                }
-                else
-                {
-                    ChangeStart = true;
-                    EndPoint = node;
-                    ResetColorOnPath();
-                }
+                OnNodeSelected(node);
             }
             else
             {
