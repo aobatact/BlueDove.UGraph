@@ -47,7 +47,11 @@ namespace BlueDove.UGraph
         }
 
         public IEnumerable<DirectionalEdge<TNode, TEdge>> GetEdges()
-            => _dictionary.SelectMany(pair => pair.Value.Where(edge => edge.Target.ID > edge.Source.ID));
+            => _dictionary.SelectMany(pair => pair.Value);
+
+        public IEnumerable<TEdge> GetEdgesNoDuplicate()
+            => _dictionary.SelectMany(pair
+                => pair.Value.Where(edge => edge.Target.ID > edge.Source.ID).Select(x => x.Edge));
 
         public IEnumerable<DirectionalEdge<TNode, TEdge>> GetEdges(TNode node) =>
             _dictionary.TryGetValue(node, out var list)
@@ -93,6 +97,8 @@ namespace BlueDove.UGraph
         }
 
         public bool RemoveNode(TNode node) => _dictionary.Remove(node);
+
+        public bool RemoveEdge(TEdge edge) => RemoveEdge(new DirectionalEdge<TNode, TEdge>(edge, true));
 
         public bool RemoveEdge(DirectionalEdge<TNode, TEdge> edge)
         {

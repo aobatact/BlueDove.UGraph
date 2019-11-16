@@ -158,6 +158,7 @@ MonoBehaviour:
   autoCreateNodes: 1
   cellSize: {x: 2, y: 2}
   cellCount: {x: 10, y: 10}
+  seed: 127
   autoCreateEdges: 1
   minDistSq: 20
   minAngle: 20
