@@ -15,8 +15,9 @@ namespace BlueDove.Sample
         public MonoNode StartPoint;
         public MonoNode EndPoint;
         public MonoGraph Graph;
+        public GraphObjectSelector<MonoNode, MonoEdge> Selector;
         public bool ChangeStart;
-        
+
         private void Start()
         {
             ChangeStart = true;
@@ -29,18 +30,30 @@ namespace BlueDove.Sample
             SetColorOnPath();
         }
 
+        private void Awake()
+        {
+            var multiSelectRay = GetComponent<MultiSelectRay>();
+            if (multiSelectRay is null)
+            {
+                Debug.LogAssertion("cannot find ray");
+            }
+            else
+            {
+                Selector = new GraphObjectSelector<MonoNode, MonoEdge>(multiSelectRay);
+            }
+        }
+
         private void OnEnable()
         {
-            var selector = GetComponent<SelectRay>();
-            if (selector != null)
-                selector.HitAction += ChangeTarget;
+            
+            Selector.NodeAction += OnNodeSelected;
+            Selector.EdgeAction += OnEdgeSelected;
         }
 
         private void OnDisable()
         {
-            var selector = GetComponent<SelectRay>();
-            if (selector != null)
-                selector.HitAction -= ChangeTarget;
+            Selector.NodeAction -= OnNodeSelected;
+            Selector.EdgeAction -= OnEdgeSelected;
         }
 
         ImmutableList<BiEdge> SearchNodes()
@@ -95,23 +108,13 @@ namespace BlueDove.Sample
                 EndPoint = node;
                 ResetColorOnPath();
             }
-            
         }
 
-        void ChangeTarget(RaycastHit raycastHit)
+        void OnEdgeSelected(MonoEdge edge)
         {
-            var node = raycastHit.transform.GetComponent<MonoNode>();
-            if (node != null)
+            if (edge != null)
             {
-                OnNodeSelected(node);
-            }
-            else
-            {
-                var edge = raycastHit.transform.GetComponent<MonoEdge>();
-                if (edge != null)
-                {
-                    Debug.Log($"Selected Edge : {edge.name}");
-                }
+                Debug.Log($"Selected Edge : {edge.name}");
             }
         }
     }
