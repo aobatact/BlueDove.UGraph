@@ -101,7 +101,7 @@ namespace BlueDove.UCollections.Native
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.CheckWriteAndThrow(m_Safety);
 #endif
-            if (_list->Length == _list->Capacity) _list->SetCapacity<T>(_list->Capacity << 1);
+            if (_list->Length >= _list->Capacity) _list->SetCapacity<T>(_list->Length << 1);
             CascadeUp(_list->Length++, value);
         }
 

@@ -32,7 +32,9 @@ namespace BlueDove.UCollections.Native
                 UnsafeUtility.AlignOf<T>(), m_AllocatorLabel = allocator);
             Count = 0;
             Last = default;
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
             DisposeSentinel.Create(out m_Safety, out m_DisposeSentinel, 1, allocator);
+#endif
             for (var i = 0; i < BufferSize; i++)
             {
                 _buffer[i] = new UnsafeList(allocator);
@@ -45,7 +47,9 @@ namespace BlueDove.UCollections.Native
                 UnsafeUtility.AlignOf<T>(), m_AllocatorLabel = allocator);
             Count = 0;
             Last = default;
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
             DisposeSentinel.Create(out m_Safety, out m_DisposeSentinel, 1, allocator);
+#endif
             for (var i = 0; i < BufferSize; i++)
             {
                 _buffer[i] = new UnsafeList(UnsafeUtility.SizeOf<T>(), UnsafeUtility.AlignOf<T>(),
