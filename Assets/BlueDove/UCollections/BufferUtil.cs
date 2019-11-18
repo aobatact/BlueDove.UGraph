@@ -9,6 +9,7 @@ namespace BlueDove.UCollections
 #if NET_STANDARD_2_1
         [DoesNotReturn]
 #endif
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void ThrowNoItem()
         {
             throw new InvalidOperationException("No Items in Heap");

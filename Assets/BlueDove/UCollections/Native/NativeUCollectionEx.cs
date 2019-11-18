@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Runtime.CompilerServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -15,6 +14,23 @@ namespace BlueDove.UCollections.Native
             ref var x = ref Unsafe.AsRef<T>(mem);
             x = value;
             return mem;
+        }
+    }
+
+    public unsafe struct Box<T> : IDisposable where T : struct
+    {
+        private readonly void* value;
+        private readonly Allocator _allocator;
+
+        public Box(T value, Allocator allocator)
+            => this.value = NativeUCollectionEx.Alloc(value, _allocator = allocator);
+
+        public ref T Value => ref Unsafe.AsRef<T>(value);
+
+        public void Dispose()
+        {
+            UnsafeUtility.Free(value, _allocator);
+            this = default;
         }
     }
 }
