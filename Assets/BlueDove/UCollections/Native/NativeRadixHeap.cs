@@ -1,4 +1,5 @@
 //#define ENABLE_UNITY_COLLECTIONS_CHECKS
+
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -32,7 +33,10 @@ namespace BlueDove.UCollections.Native
             Count = 0;
             Last = default;
             DisposeSentinel.Create(out m_Safety, out m_DisposeSentinel, 1, allocator);
-            InitAlloc(allocator);
+            for (var i = 0; i < BufferSize; i++)
+            {
+                _buffer[i] = new UnsafeList(allocator);
+            }
         }
 
         public NativeRadixHeap(int initialCount, Allocator allocator)
@@ -42,19 +46,6 @@ namespace BlueDove.UCollections.Native
             Count = 0;
             Last = default;
             DisposeSentinel.Create(out m_Safety, out m_DisposeSentinel, 1, allocator);
-            InitAlloc(initialCount, allocator);
-        }
-
-        private void InitAlloc(Allocator allocator)
-        {
-            for (var i = 0; i < BufferSize; i++)
-            {
-                _buffer[i] = new UnsafeList(allocator);
-            }
-        }
-
-        private void InitAlloc(int initialCount, Allocator allocator)
-        {
             for (var i = 0; i < BufferSize; i++)
             {
                 _buffer[i] = new UnsafeList(UnsafeUtility.SizeOf<T>(), UnsafeUtility.AlignOf<T>(),
@@ -73,14 +64,14 @@ namespace BlueDove.UCollections.Native
 
         public T Peek()
         {
-            if (Count == 0) Thrower();
+            if (Count == 0) BufferUtil.ThrowNoItem();
             Pull();
             return Last;
         }
 
         public T Pop()
         {
-            if (Count == 0) Thrower();
+            if (Count == 0) BufferUtil.ThrowNoItem();
             Pull();
             _buffer[0].Length--;
             Count--;
@@ -122,50 +113,47 @@ namespace BlueDove.UCollections.Native
             AtomicSafetyHandle.CheckWriteAndBumpSecondaryVersion(m_Safety);
             AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
 #endif
-            unsafe
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+            if (Count == 0)
+                BufferUtil.ThrowNoItem();
+#endif
+            var zero = _buffer;
+            if (zero->Length == 0)
             {
+                var ptr = zero;
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
-                if (Count == 0)
-                    BufferUtil.ThrowNoItem();
+                var i = 0;
 #endif
-                var zero = _buffer;
-                if (zero->Length == 0)
+                while ((++ptr)->Length == 0)
                 {
-                    var ptr = zero;
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
-                    var i = 0;
+                    ++i;
+                    if (i + 1 >= BufferSize)
+                        BufferUtil.ThrowNoItem();
 #endif
-                    while ((++ptr)->Length == 0)
-                    {
-#if ENABLE_UNITY_COLLECTIONS_CHECKS
-                        ++i;
-                        if (i + 1 >= BufferSize)
-                            BufferUtil.ThrowNoItem();
-#endif
-                    }
-
-                    ref var ptrPtr = ref Unsafe.AsRef<T>(ptr->Ptr);
-                    var min = ptrPtr;
-                    var length = ptr->Length;
-                    for (var j = 1; j < length; j++)
-                    {
-                        var current = Unsafe.Add(ref ptrPtr, j);
-                        if (default(TConverter).Compare(min, current) > 0)
-                            min = current;
-                    }
-
-                    for (var j = 0; j < length; j++)
-                    {
-                        var value = Unsafe.Add(ref ptrPtr, j);
-                        var elementOffset = default(TConverter).GetIndex(min, value);
-                        zero[elementOffset].Add(value);
-                    }
-
-                    ptr->Clear();
                 }
 
-                Last = Unsafe.Add(ref Unsafe.AsRef<T>(zero->Ptr), zero->Length - 1);
+                ref var ptrPtr = ref Unsafe.AsRef<T>(ptr->Ptr);
+                var min = ptrPtr;
+                var length = ptr->Length;
+                for (var j = 1; j < length; j++)
+                {
+                    var current = Unsafe.Add(ref ptrPtr, j);
+                    if (default(TConverter).Compare(min, current) > 0)
+                        min = current;
+                }
+
+                for (var j = 0; j < length; j++)
+                {
+                    var value = Unsafe.Add(ref ptrPtr, j);
+                    var elementOffset = default(TConverter).GetIndex(min, value);
+                    zero[elementOffset].Add(value);
+                }
+
+                ptr->Clear();
             }
+
+            Last = Unsafe.Add(ref Unsafe.AsRef<T>(zero->Ptr), zero->Length - 1);
         }
 
         public void Clear()
@@ -176,8 +164,6 @@ namespace BlueDove.UCollections.Native
             for (var i = 0; i < BufferSize; i++) _buffer[i].Clear();
             Count = 0;
         }
-
-        private static void Thrower() => throw new InvalidOperationException();
 
         public void Dispose()
         {
@@ -209,7 +195,7 @@ namespace BlueDove.UCollections.Native
             // will check that no jobs are writing to the container).
             DisposeSentinel.Clear(ref m_DisposeSentinel);
 #endif
-            var jobHandle = new DisposeJob {Container = this}.Schedule(inputDeps);
+            var jobHandle = new DisposeJob(this).Schedule(inputDeps);
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.Release(m_Safety);
 #endif
@@ -221,9 +207,9 @@ namespace BlueDove.UCollections.Native
         {
             public NativeRadixHeap<T, TConverter> Container;
 
-            public DisposeJob(NativeRadixHeap<T, TConverter> container) { Container = container; }
+            public DisposeJob(NativeRadixHeap<T, TConverter> container) => Container = container;
 
-            public void Execute() { Container.Deallocate(); }
+            public void Execute() => Container.Deallocate();
         }
     }
 }
