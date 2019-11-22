@@ -69,7 +69,7 @@ namespace BlueDove.UCollections.Tests
         [UnityTest]
         public IEnumerator HeapHead_NativeRadix_Temp_Int()
         {
-            using (var heap = new NativeRadixHeap<int, IntValueConverter>(Allocator.Temp))
+            using (var heap = new NativeRadixHeap<int, IntValueConverter>(Allocator.Persistent))
             {
                 var random = new Random();
                 var prev = 0;
@@ -99,7 +99,7 @@ namespace BlueDove.UCollections.Tests
         [UnityTest]
         public IEnumerator CheckSorted_NativeRadix_Temp_Int()
         {
-            using (var heap = new NativeRadixHeap<int, IntValueConverter>(Allocator.Temp))
+            using (var heap = new NativeRadixHeap<int, IntValueConverter>(Allocator.Persistent))
             {
                 var random = new Random();
                 var prev = 0;

@@ -116,8 +116,6 @@ namespace BlueDove.UCollections.Native
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.CheckWriteAndBumpSecondaryVersion(m_Safety);
             AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
-#endif
-#if ENABLE_UNITY_COLLECTIONS_CHECKS
             if (Count == 0)
                 BufferUtil.ThrowNoItem();
 #endif

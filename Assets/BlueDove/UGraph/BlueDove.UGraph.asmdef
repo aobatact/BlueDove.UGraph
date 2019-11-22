@@ -11,6 +11,8 @@
     "overrideReferences": false,
     "precompiledReferences": [],
     "autoReferenced": true,
-    "defineConstraints": [],
+    "defineConstraints": [
+        "ENABLE_UNITY_COLLECTIONS_CHECKS"
+    ],
     "versionDefines": []
 }
