@@ -99,10 +99,9 @@ namespace BlueDove.UCollections.Native
         public void Push(T value)
         {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
-            AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
             AtomicSafetyHandle.CheckWriteAndThrow(m_Safety);
 #endif
-            if (_list->Length == _list->Capacity) _list->SetCapacity<T>(_list->Capacity << 1);
+            if (_list->Length >= _list->Capacity) _list->SetCapacity<T>(_list->Length << 1);
             CascadeUp(_list->Length++, value);
         }
 
@@ -111,17 +110,17 @@ namespace BlueDove.UCollections.Native
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
             AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
 #endif
-            if (_list->Length < 2) Thrower();
+            if (_list->Length < 2) BufferUtil.ThrowNoItem();
             return GetByIndex();
         }
 
         public T Pop()
         {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
+            AtomicSafetyHandle.CheckWriteAndBumpSecondaryVersion(m_Safety);
             AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
-            AtomicSafetyHandle.CheckWriteAndThrow(m_Safety);
 #endif
-            if (_list->Length < 2) Thrower();
+            if (_list->Length < 2) BufferUtil.ThrowNoItem();
             var top = GetByIndex();
             CascadeDown(1, GetByIndex(_list->Length - 1));
             _list->Length--;
@@ -146,8 +145,8 @@ namespace BlueDove.UCollections.Native
         public bool TryPop(out T value)
         {
 #if ENABLE_UNITY_COLLECTIONS_CHECKS
+            AtomicSafetyHandle.CheckWriteAndBumpSecondaryVersion(m_Safety);
             AtomicSafetyHandle.CheckReadAndThrow(m_Safety);
-            AtomicSafetyHandle.CheckWriteAndThrow(m_Safety);
 #endif
             if (_list->Length < 2)
             {
@@ -220,8 +219,5 @@ namespace BlueDove.UCollections.Native
                 Container.Deallocate();
             }
         }
-
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private static void Thrower() => throw new InvalidOperationException();
     }
 }
