@@ -153,8 +153,8 @@ MonoBehaviour:
     type: 3}
   edgePrefab: {fileID: 5400715894565908326, guid: c436e83cc1cdabe41805478a9933e35d,
     type: 3}
-  edgeSourceDefault: {r: 0, g: 0, b: 0, a: 0}
-  edgeTargetDefault: {r: 0, g: 0, b: 0, a: 0}
+  edgeSourceDefault: {r: 0.9056604, g: 0.2947668, b: 0.2947668, a: 1}
+  edgeTargetDefault: {r: 0.38039216, g: 0.38039216, b: 0.38039216, a: 1}
   autoCreateNodes: 1
   cellSize: {x: 2, y: 2}
   cellCount: {x: 10, y: 10}
@@ -243,5 +243,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8761068308552231193, guid: 06ccbd07ca61e5d43879c021db9348ef,
+        type: 3}
+      propertyPath: Graph
+      value: 
+      objectReference: {fileID: 731806052}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06ccbd07ca61e5d43879c021db9348ef, type: 3}
