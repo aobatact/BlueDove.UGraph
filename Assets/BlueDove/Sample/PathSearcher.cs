@@ -7,6 +7,7 @@ using BlueDove.UGraph;
 using BlueDove.UGraph.Algorithm;
 using Unity.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using BiEdge = BlueDove.UGraph.DirectionalEdge<BlueDove.Sample.MonoNode, BlueDove.Sample.MonoEdge>;
 namespace BlueDove.Sample
 {
@@ -17,7 +18,8 @@ namespace BlueDove.Sample
         public MonoGraph Graph;
         public GraphObjectSelector<MonoNode, MonoEdge> Selector;
         public bool ChangeStart;
-
+        public PlayerInput input;
+        
         private void Start()
         {
             ChangeStart = true;
@@ -32,14 +34,8 @@ namespace BlueDove.Sample
 
         private void Awake()
         {
-            var multiSelectRay = GetComponent<MultiSelectRay>();
-            if (multiSelectRay is null)
             {
-                Debug.LogAssertion("cannot find ray");
-            }
-            else
-            {
-                Selector = new GraphObjectSelector<MonoNode, MonoEdge>(multiSelectRay);
+                Selector = new GraphObjectSelector<MonoNode, MonoEdge>(new MultiSelectRay(input.));
             }
         }
 

@@ -6624,6 +6624,40 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5923c0691ecdca43954a6a35ffa5b12, type: 3}
+--- !u!1 &635115255 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8761068308552226534, guid: 06ccbd07ca61e5d43879c021db9348ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 646660985}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &635115256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 635115255}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: 585cb01f71fa8f24596384a918310a29,
+    type: 3}
+  m_NotificationBehavior: 3
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents: []
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: 7c0d648e-2948-46d3-9e86-8a0f120ca235
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 1708707402}
 --- !u!4 &640265299 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
@@ -6766,6 +6800,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8761068308552231193, guid: 06ccbd07ca61e5d43879c021db9348ef,
+        type: 3}
+      propertyPath: Graph
+      value: 
+      objectReference: {fileID: 1382761379}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06ccbd07ca61e5d43879c021db9348ef, type: 3}
 --- !u!4 &650348014 stripped
@@ -12938,6 +12977,7 @@ MonoBehaviour:
   autoCreateNodes: 0
   cellSize: {x: 0, y: 0}
   cellCount: {x: 0, y: 0}
+  seed: 12
   autoCreateEdges: 1
   minDistSq: 20
   minAngle: 5
@@ -16388,6 +16428,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a5923c0691ecdca43954a6a35ffa5b12, type: 3}
+--- !u!20 &1708707402 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 7815893335571324658, guid: 06ccbd07ca61e5d43879c021db9348ef,
+    type: 3}
+  m_PrefabInstance: {fileID: 646660985}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1711730085 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7807602182191206595, guid: a5923c0691ecdca43954a6a35ffa5b12,
