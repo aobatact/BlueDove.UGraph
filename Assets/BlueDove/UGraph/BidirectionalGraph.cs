@@ -5,11 +5,12 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>>
-        where TNode : IEquatable<TNode>, IIDHolder
+    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>> where TNode : IEquatable<TNode>, IIDHolder
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {
         private readonly DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> _dictionary;
+
+        public bool IsInit => !(_dictionary is null);
 
         public BidirectionalGraph(int initCapacity)
         {

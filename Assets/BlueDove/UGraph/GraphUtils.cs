@@ -36,7 +36,7 @@ namespace BlueDove.UGraph
             source.Equals(edge.Source);
 
         //TODO There are some irregular angle yet. 
-        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float minDistSq, float minAngle,
+        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float maxDistSq, float minAngle,
             Func<TNode, TNode, TEdge> func)
             where TNode : IEquatable<TNode>, IIDHolder, IVector3Node
             where TEdge : IEdge<TNode>
@@ -54,7 +54,7 @@ namespace BlueDove.UGraph
                     var nodeB = nodes[j];
                     var vec = nodeB.Position - nodeA.Position;
                     var distSq = Vector3.SqrMagnitude(vec);
-                    if (distSq > minDistSq)
+                    if (distSq > maxDistSq)
                         continue;
                     var dist = Mathf.Sqrt(distSq);
                     list.Add((nodeB, dist));

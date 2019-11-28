@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
-using Unity.Mathematics;
 
-namespace BlueDove.UGraph.Jobs
+namespace BlueDove.UGraph
 {
     public readonly struct EndNodes<TNode> : IEquatable<TNode>, IDisposable
         where TNode : struct, IIDHolder, IEquatable<TNode>
