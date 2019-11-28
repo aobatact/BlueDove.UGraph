@@ -29,15 +29,16 @@ namespace BlueDove.UGraph.Mono
     [RequireComponent(typeof(LineRenderer))]
     public abstract class LineRenderedEdgeBase<TNode> : EdgeBase<TNode> where TNode : IVector3Node, IEquatable<TNode>
     {
-        [SerializeField] protected LineRenderer Renderer;
+        [SerializeField] protected LineRenderer _renderer;
+        public LineRenderer Renderer => _renderer;
 
         private void Start() => StartInner();
 
         protected void StartInner()
         {
-            if (Renderer == null)
+            if (_renderer == null)
             {
-                Renderer = GetComponent<LineRenderer>();
+                _renderer = GetComponent<LineRenderer>();
             }
             if (Renderer == null)
             {
@@ -78,7 +79,7 @@ namespace BlueDove.UGraph.Mono
     /// Base class for LineRendered Edge for which Node often moves
     /// </summary>
     /// <typeparam name="TNode"></typeparam>
-    public abstract class VectorCacheLREdgeBase<TNode> : LineRenderedEdgeBase<TNode> where TNode : IVector3Node, IEquatable<TNode>
+    public abstract class CachedLREdgeBase<TNode> : LineRenderedEdgeBase<TNode> where TNode : IVector3Node, IEquatable<TNode>
     {
         /// <summary>
         /// cache for no reallocate 
