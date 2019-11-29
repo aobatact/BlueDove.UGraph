@@ -9,11 +9,12 @@ namespace BlueDove.Sample
     public class MonoEdge : MonoBehaviour, IEdge<MonoNode>, IEquatable<MonoEdge>
     {
         private LineRenderer _renderer;
-        [SerializeField] private MonoNode source;
-        [SerializeField] private MonoNode target;
         private Vector3[] pos;
         private MeshCollider _collider;
-        
+#pragma warning disable 0649
+        [SerializeField] private MonoNode source;
+        [SerializeField] private MonoNode target;
+#pragma warning restore 0649
         public LineRenderer Renderer => _renderer;
         
         // Start is called before the first frame update

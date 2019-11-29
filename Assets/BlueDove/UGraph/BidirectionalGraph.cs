@@ -5,7 +5,7 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>>
+    public readonly struct BidirectionalGraph<TNode, TEdge> : IWritableGraph<TNode, DirectionalEdge<TNode, TEdge>>, IGraph<TNode,DirectionalEdge<TNode, TEdge>>
         where TNode : IEquatable<TNode>, IIDHolder
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {

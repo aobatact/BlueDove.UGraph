@@ -3,10 +3,10 @@ using Unity.Collections;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct ReadOnlyNativeGraphWrapper<TNode, TEdge, TGraph> : IReadOnlyGraph<TNode, TEdge>
+    public readonly struct ReadOnlyNativeGraphWrapper<TNode, TEdge, TGraph> : IGraph<TNode, TEdge>
         where TNode : struct
         where TEdge : struct, IEdge<TNode>
-        where TGraph : IReadOnlyNativeGraph<TNode, TEdge>
+        where TGraph : INativeGraph<TNode, TEdge>
     {
         private readonly TGraph _graph;
         private readonly Allocator _allocator;

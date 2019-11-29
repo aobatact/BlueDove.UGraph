@@ -3,7 +3,7 @@ using Unity.Collections;
 
 namespace BlueDove.UGraph
 {
-    public interface IReadOnlyGraph<TNode, TEdge> where TEdge : IEdge<TNode>
+    public interface IGraph<TNode, TEdge> where TEdge : IEdge<TNode>
     {
         bool Contains(TNode node);
         bool Contains(TEdge edge);
@@ -13,7 +13,7 @@ namespace BlueDove.UGraph
         IEnumerable<TNode> GetNodes();
     }
 
-    public interface IGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge> where TEdge : IEdge<TNode>
+    public interface IWritableGraph<in TNode, in TEdge> where TEdge : IEdge<TNode>
     {
         bool AcceptDuplicateEdges { get; }
         bool AddNode(TNode node);
@@ -23,7 +23,7 @@ namespace BlueDove.UGraph
         void Clear();
     }
     
-    public interface IReadOnlyNativeGraph<TNode, TEdge> where TNode : struct where TEdge : struct, IEdge<TNode>
+    public interface INativeGraph<TNode, TEdge> where TNode : struct where TEdge : struct, IEdge<TNode>
     {
         bool Contains(TNode node);
         bool Contains(TEdge edge);

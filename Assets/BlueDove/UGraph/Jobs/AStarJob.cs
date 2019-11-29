@@ -18,7 +18,7 @@ namespace BlueDove.UGraph.Jobs
     public readonly struct AStarJob<TNode, TEndNode, TEdge, TGraph, THeap, TGFunc> : IJob
         where TNode : struct, IEquatable<TNode>, IIDHolder
         where TEdge : struct, IEdge<TNode>, IEquatable<TEdge>
-        where TGraph : struct, IReadOnlyNativeGraph<TNode, TEdge>
+        where TGraph : struct, INativeGraph<TNode, TEdge>
         where THeap : struct, IHeap<int>
         where TGFunc : struct, ICostFunc<TEdge>
         where TEndNode : struct, IEquatable<TNode>, ICostFunc<TNode>
