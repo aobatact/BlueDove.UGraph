@@ -12,7 +12,9 @@ namespace BlueDove.UGraph.Mono
     {
         public TGraph Graph;
         public bool InitNodeFromChild;
-
+        public Transform nodeRootTransform;
+        public Transform edgeRootTransform;
+        
         public bool InitRandomNodes => !count.Equals(default);
         public float2 size;
         public int2 count;
@@ -37,9 +39,13 @@ namespace BlueDove.UGraph.Mono
             }
             else if (InitRandomNodes)
             {
+                if (nodeRootTransform is null)
+                {
+                    nodeRootTransform = Graph.transform;
+                }
                 nodes = GraphUtils.GeneratePoints(size, count, x =>
                 {
-                    var n = Instantiate(nodePrefab, Unsafe.As<float3, Vector3>(ref x), Quaternion.identity, transform);
+                    var n = Instantiate(nodePrefab, Unsafe.As<float3, Vector3>(ref x), Quaternion.identity, nodeRootTransform);
                     n.ID = Graph.IDPublisher.Publish();
                     return n;
                 }, seed);
@@ -58,9 +64,13 @@ namespace BlueDove.UGraph.Mono
                 }
             else
             {
+                if (edgeRootTransform is null)
+                {
+                    edgeRootTransform = Graph.transform;
+                }
                 GraphUtils.CreateEdges(Graph, nodes, maxDistSq, minAngle, (x, y) =>
                 {
-                    var e = Instantiate(edgePrefab, transform);
+                    var e = Instantiate(edgePrefab, edgeRootTransform);
                     e.Source = x;
                     e.Target = y;
                     return new DirectionalEdge<TNode, TEdge>(e);

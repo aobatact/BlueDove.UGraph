@@ -72,6 +72,12 @@ namespace BlueDove.UGraph.Mono
             Renderer.BakeMesh(mesh);
             collider.sharedMesh = mesh;
         }
+
+        public void SetColor(Color color) 
+        {
+            Renderer.startColor = color;
+            Renderer.endColor = color;
+        }
     }
 
     /// <inheritdoc cref="LineRenderedEdgeBase{TNode}"/>

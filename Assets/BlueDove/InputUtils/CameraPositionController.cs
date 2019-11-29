@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace BlueDove.Sample
+namespace BlueDove.InputUtils
 {
     [RequireComponent(typeof(Camera))]
     public class CameraPositionController : MonoBehaviour
