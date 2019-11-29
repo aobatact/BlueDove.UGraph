@@ -6766,6 +6766,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8761068308552231193, guid: 06ccbd07ca61e5d43879c021db9348ef,
+        type: 3}
+      propertyPath: Graph
+      value: 
+      objectReference: {fileID: 1382761379}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 06ccbd07ca61e5d43879c021db9348ef, type: 3}
 --- !u!4 &650348014 stripped
@@ -12938,6 +12943,7 @@ MonoBehaviour:
   autoCreateNodes: 0
   cellSize: {x: 0, y: 0}
   cellCount: {x: 0, y: 0}
+  seed: 12
   autoCreateEdges: 1
   minDistSq: 20
   minAngle: 5

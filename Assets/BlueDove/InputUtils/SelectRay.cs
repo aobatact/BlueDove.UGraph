@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace BlueDove.Sample
+namespace BlueDove.InputUtils
 {
     public class SelectRay : MonoBehaviour
     {
@@ -34,10 +34,13 @@ namespace BlueDove.Sample
            //Debug.Log("Clicked");
             var point = Ray.ReadValue<Vector2>();
             var ray = rayCamera.ScreenPointToRay(point);
-            if (Physics.Raycast(ray, out var hit))
+            if (HitAction != null)
             {
-                //Debug.Log("Hit");
-                HitAction?.Invoke(hit);
+                if (Physics.Raycast(ray, out var hit))
+                {
+                    //Debug.Log("Hit");
+                    HitAction.Invoke(hit);
+                }
             }
         }
     }
