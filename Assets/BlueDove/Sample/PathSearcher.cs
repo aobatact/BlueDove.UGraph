@@ -17,10 +17,15 @@ namespace BlueDove.Sample
         public MonoNode EndPoint;
         public MonoGraph Graph;
         public bool ChangeStart;
+        public ImmutableList<BiEdge> CurrentPath; 
         
         private void Start()
         {
             ChangeStart = true;
+            if (Graph == null)
+            {
+                Debug.LogAssertion("Graph is null");
+            }
         }
         
         private void ResetColorOnPath()
@@ -71,6 +76,7 @@ namespace BlueDove.Sample
             }
             else
             {
+                CurrentPath = immutableList;
                 foreach (var edge in immutableList)
                 {
                     edge.Edge.Renderer.startColor = Color.green;

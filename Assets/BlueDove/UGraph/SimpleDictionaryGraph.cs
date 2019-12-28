@@ -5,7 +5,7 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public struct SimpleDictionaryGraph<TNode, TEdge> : IGraph<TNode, TEdge> where TEdge : IEdge<TNode> where TNode : IEquatable<TNode>, IIDHolder
+    public struct SimpleDictionaryGraph<TNode, TEdge> : IWritableGraph<TNode, TEdge>, IGraph<TNode, TEdge> where TEdge : IEdge<TNode> where TNode : IEquatable<TNode>, IIDHolder
     {
         private readonly DictionarySlim<TNode, List<TEdge>> _dictionary;
 

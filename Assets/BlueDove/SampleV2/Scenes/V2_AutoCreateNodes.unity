@@ -148,14 +148,6 @@ PrefabInstance:
         type: 3}
       propertyPath: count.y
       value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1188071081949474910, guid: 128ae33fe95da0d44ae196071961448b,
-        type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1188071081949474910, guid: 128ae33fe95da0d44ae196071961448b,
-        type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}

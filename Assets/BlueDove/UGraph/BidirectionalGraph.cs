@@ -5,7 +5,13 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>> where TNode : IEquatable<TNode>, IIDHolder
+    /// <summary>
+    /// Simple Dictionary Based Bidirectional Graph
+    /// </summary>
+    /// <typeparam name="TNode">Node</typeparam>
+    /// <typeparam name="TEdge">Edge wrapped by <see cref="DirectionalEdge{TNode, TEdge}"/></typeparam>
+    public readonly struct BidirectionalGraph<TNode, TEdge> : IWritableGraph<TNode, DirectionalEdge<TNode, TEdge>>, IGraph<TNode,DirectionalEdge<TNode, TEdge>>
+        where TNode : IEquatable<TNode>, IIDHolder
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {
         private readonly DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> _dictionary;

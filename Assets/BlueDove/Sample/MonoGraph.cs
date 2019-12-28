@@ -9,11 +9,12 @@ using BiEdge = BlueDove.UGraph.DirectionalEdge<BlueDove.Sample.MonoNode, BlueDov
 
 namespace BlueDove.Sample
 {
-    public class MonoGraph : MonoBehaviour, IGraph<MonoNode, BiEdge>, ICostFunc<BiEdge>
+    public class MonoGraph : MonoBehaviour, IWritableGraph<MonoNode, BiEdge>, IGraph<MonoNode, BiEdge>, ICostFunc<BiEdge>
     {
         private IDPublisherS _idPublisher;
         private BidirectionalGraph<MonoNode, MonoEdge> _graph;
 
+#pragma warning disable 0649
         [SerializeField] private MonoNode nodePrefab;
         [SerializeField] private MonoEdge edgePrefab;
         [SerializeField] private Color edgeSourceDefault;
@@ -23,13 +24,13 @@ namespace BlueDove.Sample
         [SerializeField] private bool autoCreateNodes;
         [SerializeField] private Vector2 cellSize;
         [SerializeField] private Vector2Int cellCount;
-        [SerializeField] private uint seed = 12;
+        [SerializeField] private uint seed = 127;
 
 
         [SerializeField] private bool autoCreateEdges;
         [SerializeField] private float minDistSq;
         [SerializeField] private float minAngle;
-
+#pragma warning restore 0649
         public MonoNode CreateNewNode(Vector3 pos)
         {
             var node = Instantiate(nodePrefab, pos, Quaternion.identity);
@@ -101,6 +102,7 @@ namespace BlueDove.Sample
         public MonoNode GetNodeByID(int id)
             => _graph.GetNodes().FirstOrDefault(x => x.ID == id);
 
+        
         public bool AcceptDuplicateEdges => false;
 
 

@@ -3,8 +3,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "BlueDove.UCollections",
-        "BlueDove.UCollections.Native"
+        "BlueDove.UCollections"
     ],
     "includePlatforms": [
         "Editor"

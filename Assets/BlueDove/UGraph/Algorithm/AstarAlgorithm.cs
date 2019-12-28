@@ -36,7 +36,7 @@ namespace BlueDove.UGraph.Algorithm
             TGraph graph, THeap heap, TGFunc costFunc, TNode start, TEndNode end)
             where TNode : IEquatable<TNode>, IIDHolder
             where TEdge : IEdge<TNode>
-            where TGraph : IReadOnlyGraph<TNode, TEdge>
+            where TGraph : IGraph<TNode, TEdge>
             where THeap : IHeap<KeyValuePair<float,int>>
             where TGFunc : ICostFunc<TEdge>
             where TEndNode : IEquatable<TNode>, ICostFunc<TNode>
@@ -145,7 +145,7 @@ namespace BlueDove.UGraph.Algorithm
             IEquatable<AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>>
             where TNode : IEquatable<TNode>, IIDHolder
             where TEdge : IEdge<TNode>
-            where TGraph : IReadOnlyGraph<TNode, TEdge>
+            where TGraph : IGraph<TNode, TEdge>
             where THeap : IHeap<KeyValuePair<float, int>>
             where TGFunc : ICostFunc<TEdge>
         {
