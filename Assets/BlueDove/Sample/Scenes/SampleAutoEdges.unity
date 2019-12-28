@@ -407,6 +407,7 @@ MonoBehaviour:
   autoCreateNodes: 0
   cellSize: {x: 0, y: 0}
   cellCount: {x: 0, y: 0}
+  seed: 12
   autoCreateEdges: 1
   minDistSq: 20
   minAngle: 20
@@ -440,6 +441,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Path Finder
       objectReference: {fileID: 0}
+    - target: {fileID: 4083813604270255501, guid: 851ca9f1c1da1e849b367fc1a6185c0a,
+        type: 3}
+      propertyPath: rayCamera
+      value: 
+      objectReference: {fileID: 1102618085}
     - target: {fileID: 4083813604270255502, guid: 851ca9f1c1da1e849b367fc1a6185c0a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -495,6 +501,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4083813604270255503, guid: 851ca9f1c1da1e849b367fc1a6185c0a,
+        type: 3}
+      propertyPath: Graph
+      value: 
+      objectReference: {fileID: 1382761379}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 851ca9f1c1da1e849b367fc1a6185c0a, type: 3}
 --- !u!4 &1640940360 stripped
