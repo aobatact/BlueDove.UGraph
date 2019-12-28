@@ -60,8 +60,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e063586376441a998a1a66dfd0d670a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Graph: {fileID: 1188071081949474897}
-  InitNodeFromChild: 0
+  graph: {fileID: 1188071081949474897}
+  initNodeFromChild: 0
   nodeRootTransform: {fileID: 4745802581748858368}
   edgeRootTransform: {fileID: 2649505611388008988}
   size:
@@ -73,12 +73,12 @@ MonoBehaviour:
   seed: 34
   nodePrefab: {fileID: 3291913376991831600, guid: af84f9b2119b0c04da1462aed7bc2c84,
     type: 3}
-  InitEdgeFromChild: 0
+  initEdgeFromChild: 0
   edgePrefab: {fileID: 56091002875956315, guid: 6139f06c5ee61894bbef9915d5880d6e,
     type: 3}
   maxDistSq: 196
   minAngle: 15
-  DestroyAfterInit: 0
+  destroyAfterInit: 0
 --- !u!1 &1312062932894538062
 GameObject:
   m_ObjectHideFlags: 0

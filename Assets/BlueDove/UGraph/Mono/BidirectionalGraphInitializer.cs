@@ -10,8 +10,8 @@ namespace BlueDove.UGraph.Mono
         where TEdge : EdgeBase<TNode>, IEquatable<TEdge>
         where TGraph : BidirectionalGraphBase<TNode, TEdge>
     {
-        public TGraph Graph;
-        public bool InitNodeFromChild;
+        public TGraph graph;
+        public bool initNodeFromChild;
         public Transform nodeRootTransform;
         public Transform edgeRootTransform;
         
@@ -21,32 +21,32 @@ namespace BlueDove.UGraph.Mono
         public uint seed = 1234;
         public TNode nodePrefab;
 
-        public bool InitEdgeFromChild;
+        public bool initEdgeFromChild;
         
         public TEdge edgePrefab;
         public float maxDistSq;
         public float minAngle;
 
-        public bool DestroyAfterInit;
+        public bool destroyAfterInit;
 
         private void Init()
         {
-            Graph.Init();
+            graph.Init();
             TNode[] nodes;
-            if (InitNodeFromChild)
+            if (initNodeFromChild)
             {
-                nodes = Graph.GetComponentsInChildren<TNode>();
+                nodes = graph.GetComponentsInChildren<TNode>();
             }
             else if (InitRandomNodes)
             {
                 if (nodeRootTransform is null)
                 {
-                    nodeRootTransform = Graph.transform;
+                    nodeRootTransform = graph.transform;
                 }
                 nodes = GraphUtils.GeneratePoints(size, count, x =>
                 {
                     var n = Instantiate(nodePrefab, Unsafe.As<float3, Vector3>(ref x), Quaternion.identity, nodeRootTransform);
-                    n.ID = Graph.IDPublisher.Publish();
+                    n.ID = graph.idPublisher.Publish();
                     return n;
                 }, seed);
             }
@@ -55,20 +55,20 @@ namespace BlueDove.UGraph.Mono
                 return;
             }
             foreach (var node in nodes)
-                Graph.AddNode(node);
+                graph.AddNode(node);
 
-            if (InitEdgeFromChild)
-                foreach (var edge in Graph.GetComponentsInChildren<TEdge>())
+            if (initEdgeFromChild)
+                foreach (var edge in graph.GetComponentsInChildren<TEdge>())
                 {
-                    Graph.AddEdge(edge);
+                    graph.AddEdge(edge);
                 }
             else
             {
                 if (edgeRootTransform is null)
                 {
-                    edgeRootTransform = Graph.transform;
+                    edgeRootTransform = graph.transform;
                 }
-                GraphUtils.CreateEdges(Graph, nodes, maxDistSq, minAngle, (x, y) =>
+                GraphUtils.CreateEdges(graph, nodes, maxDistSq, minAngle, (x, y) =>
                 {
                     var e = Instantiate(edgePrefab, edgeRootTransform);
                     e.Source = x;
@@ -77,7 +77,7 @@ namespace BlueDove.UGraph.Mono
                 });
             }
 
-            if (DestroyAfterInit)
+            if (destroyAfterInit)
             {
                 Destroy(this);
             }

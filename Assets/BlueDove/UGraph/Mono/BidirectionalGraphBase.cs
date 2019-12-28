@@ -9,15 +9,14 @@ namespace BlueDove.UGraph.Mono
         where TNode : NodeBase, IEquatable<TNode>
         where TEdge : EdgeBase<TNode>, IEquatable<TEdge>
     {
-        //private BidirectionalGraph<TNode, DirectionalEdge<TNode, TEdge>> _graph;
         private BidirectionalGraph<TNode, TEdge> _graph;
-        public IDPublisherS IDPublisher;
+        public IDPublisherS idPublisher;
 
         // Start is called before the first frame update
         public void Init()
         {
             _graph = new BidirectionalGraph<TNode, TEdge>(4);
-            IDPublisher = new IDPublisherS();
+            idPublisher = new IDPublisherS();
         }
 
         private void Start()
@@ -52,7 +51,7 @@ namespace BlueDove.UGraph.Mono
         {
             if (node.ID == 0)
             {
-                node.ID = IDPublisher.Publish();
+                node.ID = idPublisher.Publish();
             }
             return _graph.AddNode(node);
         }
@@ -63,11 +62,11 @@ namespace BlueDove.UGraph.Mono
         {
             if (edge.Source.ID == 0)
             {
-                edge.Source.ID = IDPublisher.Publish();
+                edge.Source.ID = idPublisher.Publish();
             }
             if (edge.Target.ID == 0)
             {
-                edge.Target.ID = IDPublisher.Publish();
+                edge.Target.ID = idPublisher.Publish();
             }
             return _graph.AddEdge(edge);
         }
