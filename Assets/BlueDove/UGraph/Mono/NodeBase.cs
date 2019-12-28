@@ -12,5 +12,4 @@ namespace BlueDove.UGraph.Mono
 
         public Vector3 Position => transform.position;
     }
-
 }
