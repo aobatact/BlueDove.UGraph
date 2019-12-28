@@ -80,6 +80,7 @@ namespace BlueDove.SampleV2
                 endNode = node;
                 if (endNode != null)
                 {
+                    Graph.ResetNodeColors();
                     Graph.ResetEdgeColors();
                     PaintPath();
                     startNode = null;

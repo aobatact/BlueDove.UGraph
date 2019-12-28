@@ -5,7 +5,8 @@ using UnityEngine;
 
 namespace BlueDove.SampleV2
 {
-    public class SampleGraph : BidirectionalGraphBase<SampleNode, SampleEdge>, ICostFunc<DirectionalEdge<SampleNode, SampleEdge>>
+    public class SampleGraph : BidirectionalGraphBase<SampleNode, SampleEdge>,
+        ICostFunc<DirectionalEdge<SampleNode, SampleEdge>>
     {
         public Color defaultNodeColor;
         public Color defaultEdgeColor;
@@ -17,7 +18,7 @@ namespace BlueDove.SampleV2
                 node.Mark(defaultNodeColor);
             }
         }
-        
+
         public void ResetEdgeColors()
         {
             foreach (var edge in GetEdges())
