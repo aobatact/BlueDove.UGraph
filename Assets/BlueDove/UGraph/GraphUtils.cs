@@ -20,6 +20,14 @@ namespace BlueDove.UGraph
             where TNodeLike : IEquatable<TNode> where TEdge : IEdge<TNode> =>
             source.Equals(edge.Source);
 
+        /// <summary>
+        /// Create Edges from Nodes.
+        /// </summary>
+        /// <param name="graph">Target Graph</param>
+        /// <param name="nodes">Nodes to link edges</param>
+        /// <param name="maxDistSq"></param>
+        /// <param name="minAngle"></param>
+        /// <param name="func"></param>
         //TODO There are some irregular angle yet. 
         public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float maxDistSq, float minAngle,
             Func<TNode, TNode, TEdge> func)
