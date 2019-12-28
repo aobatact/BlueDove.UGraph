@@ -1,10 +1,10 @@
 {
-    "name": "BlueDove.UGraph.Samples",
+    "name": "BlueDove.UGraph.SampleV2",
     "references": [
-        "GUID:a4b99c517ed80b74e9a076b63baa8f6e",
+        "GUID:607971ad57cbedf4685918d2fc946c60",
         "GUID:0522fb842b1b6dd43bb1771624da874e",
+        "GUID:a4b99c517ed80b74e9a076b63baa8f6e",
         "GUID:75469ad4d38634e559750d17036d5f7c",
-        "GUID:d8b63aba1907145bea998dd612889d6b",
         "GUID:4da2456744c38b44a881ced89a81837e"
     ],
     "includePlatforms": [],

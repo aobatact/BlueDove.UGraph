@@ -11,6 +11,8 @@ namespace BlueDove.UGraph
     {
         private readonly DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> _dictionary;
 
+        public bool IsInit => !(_dictionary is null);
+
         public BidirectionalGraph(int initCapacity)
         {
             _dictionary = new DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>>(initCapacity);

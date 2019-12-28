@@ -12943,6 +12943,7 @@ MonoBehaviour:
   autoCreateNodes: 0
   cellSize: {x: 0, y: 0}
   cellCount: {x: 0, y: 0}
+  seed: 12
   autoCreateEdges: 1
   minDistSq: 20
   minAngle: 5
