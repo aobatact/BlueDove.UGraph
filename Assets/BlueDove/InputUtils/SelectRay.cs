@@ -10,11 +10,20 @@ namespace BlueDove.InputUtils
         public InputAction Ray;
 
         public Camera rayCamera;
-        public event Action<RaycastHit> HitAction;
-    
+        public event Action<RaycastHit[], int> HitsAction;
+        private RaycastHit[] hits;
+        [SerializeField] private float maxDistance = 30;
+
+        public int RaycastHitsCashSize
+        {
+            get => hits?.Length ?? 0;
+            set => hits = new RaycastHit[value];
+        }
+
         private void Awake()
         {
             Click.performed += Selected;
+            RaycastHitsCashSize = 4;
         }
 
         private void OnEnable()
@@ -31,15 +40,16 @@ namespace BlueDove.InputUtils
 
         private void Selected(InputAction.CallbackContext context)
         {
-           //Debug.Log("Clicked");
+            //Debug.Log("Clicked");
             var point = Ray.ReadValue<Vector2>();
             var ray = rayCamera.ScreenPointToRay(point);
-            if (HitAction != null)
+            if (HitsAction != null)
             {
-                if (Physics.Raycast(ray, out var hit))
+                var hitCount = Physics.RaycastNonAlloc(ray, hits, maxDistance);
+                if (hitCount > 0)
                 {
                     //Debug.Log("Hit");
-                    HitAction.Invoke(hit);
+                    HitsAction.Invoke(hits, hitCount);
                 }
             }
         }
