@@ -148,8 +148,6 @@ PrefabInstance:
         type: 3}
       propertyPath: count.y
       value: 10
-      propertyPath: m_LocalPosition.y
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1188071081949474910, guid: 128ae33fe95da0d44ae196071961448b,
         type: 3}
@@ -213,6 +211,11 @@ PrefabInstance:
     - target: {fileID: 1601313592422507188, guid: 9fd45034b77528f429017a5365e8e1e3,
         type: 3}
       propertyPath: Graph
+      value: 
+      objectReference: {fileID: 1556643122}
+    - target: {fileID: 1601313592422507188, guid: 9fd45034b77528f429017a5365e8e1e3,
+        type: 3}
+      propertyPath: graph
       value: 
       objectReference: {fileID: 1556643122}
     - target: {fileID: 3681648327571358778, guid: 9fd45034b77528f429017a5365e8e1e3,

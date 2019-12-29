@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Runtime.CompilerServices;
 using BlueDove.InputUtils;
 using BlueDove.UCollections;
 using BlueDove.UCollections.Native;
@@ -17,7 +18,7 @@ namespace BlueDove.SampleV2
         private SampleNode endNode;
 
         [SerializeField]
-        private SampleGraph Graph;
+        private SampleGraph graph;
 
         public Color pathColor;
 
@@ -26,7 +27,7 @@ namespace BlueDove.SampleV2
             var ray = GetComponent<SelectRay>();
             if (ray != null)
             {
-                ray.HitAction += Hit;
+                ray.HitsAction += OnHits;
             }
         }
 
@@ -35,7 +36,7 @@ namespace BlueDove.SampleV2
             var ray = GetComponent<SelectRay>();
             if (ray != null)
             {
-                ray.HitAction -= Hit;
+                ray.HitsAction -= OnHits;
             }
         }
 
@@ -47,7 +48,7 @@ namespace BlueDove.SampleV2
                 return AStarAlgorithm
                     .Compute<SampleNode, DirectionalEdge<SampleNode, SampleEdge>, SampleGraph,
                         NativeRadixHeap<KeyValuePair<float, int>, FloatIntValueConverter>, SampleGraph, SampleNode>(
-                        Graph, heap, Graph, startNode, endNode);
+                        graph, heap, graph, startNode, endNode);
             }
         }
 
@@ -68,6 +69,13 @@ namespace BlueDove.SampleV2
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void OnHits(RaycastHit[] hits, int count)
+        {
+            var node = ObjSelector.GetObjectFromHits<SampleNode>(hits, count);
+            if (!(node is null)) SelectNode(node);
+        }
+
         public void SelectNode(SampleNode node)
         {
             if (startNode == null)
@@ -80,8 +88,8 @@ namespace BlueDove.SampleV2
                 endNode = node;
                 if (endNode != null)
                 {
-                    Graph.ResetNodeColors();
-                    Graph.ResetEdgeColors();
+                    graph.ResetNodeColors();
+                    graph.ResetEdgeColors();
                     PaintPath();
                     startNode = null;
                     endNode = null;

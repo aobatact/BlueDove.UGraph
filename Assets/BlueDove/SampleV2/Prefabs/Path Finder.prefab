@@ -80,6 +80,7 @@ MonoBehaviour:
       m_Action: Ray
       m_Flags: 0
   rayCamera: {fileID: 0}
+  maxDistance: 30
 --- !u!114 &1601313592422507188
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,5 +93,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b699e9b7ef6c104598cf3a081009faa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Graph: {fileID: 0}
+  graph: {fileID: 0}
   pathColor: {r: 0.8584906, g: 0.68984663, b: 0.31990921, a: 1}
