@@ -67,7 +67,6 @@ namespace BlueDove.InputUtils
                 var pos = t.position;
                 pos += xyDiff * _currentZoomSizeSq;
                 t.position = pos;
-                //yield return new WaitForSeconds(1/62f);
                 yield return null;
             }
         }
@@ -75,6 +74,7 @@ namespace BlueDove.InputUtils
         void MoveZ(InputAction.CallbackContext context)
         {
             var f = context.ReadValue<float>();
+            // ReSharper disable once CompareOfFloatsByEqualityOperator
             if (f != 0)
             {
                 var zoomSizeSq = _currentZoomSizeSq / speedSq;
@@ -82,6 +82,7 @@ namespace BlueDove.InputUtils
                 var n = currentZoomSize + f;
                 if (n < minZoomSize)
                 {
+                    // ReSharper disable once CompareOfFloatsByEqualityOperator
                     if(currentZoomSize == minZoomSize)
                         return;
                     n = minZoomSize;

@@ -47,8 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b384d7d9a6ee0349873ccba562daa75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Click:
-    m_Name: Click
+  click:
+    m_Name: click
     m_Type: 1
     m_ExpectedControlType: Button
     m_Id: 1433f19f-e560-42b5-b246-012bc3da4bcc
@@ -61,10 +61,10 @@ MonoBehaviour:
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Click
+      m_Action: click
       m_Flags: 0
-  Ray:
-    m_Name: Ray
+  ray:
+    m_Name: ray
     m_Type: 0
     m_ExpectedControlType: Vector2
     m_Id: 33d296a3-858e-45ff-a169-b906ef9e2efa
@@ -77,7 +77,7 @@ MonoBehaviour:
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Ray
+      m_Action: ray
       m_Flags: 0
   rayCamera: {fileID: 0}
   maxDistance: 30

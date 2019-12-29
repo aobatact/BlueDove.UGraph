@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.Collections.Extensions;
 using Unity.Collections;
 using UnityEngine;
@@ -10,16 +9,6 @@ namespace BlueDove.UGraph
 {
     public static partial class GraphUtils
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetDirection<TNode, TEdge>(this TEdge edge, TNode source)
-            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            GetDirection<TNode, TNode, TEdge>(edge, source);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetDirection<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike source)
-            where TNodeLike : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            source.Equals(edge.Source);
-
         /// <summary>
         /// Create Edges from Nodes.
         /// </summary>
