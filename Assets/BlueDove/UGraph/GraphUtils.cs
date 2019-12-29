@@ -1,45 +1,28 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Microsoft.Collections.Extensions;
+using Unity.Collections;
 using UnityEngine;
 
 namespace BlueDove.UGraph
 {
     public static partial class GraphUtils
     {
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TNode GetOther<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike node)
-            where TNodeLike : IEquatable<TNode>
-            where TEdge : IEdge<TNode>
-        {
-            if (node.Equals(edge.Source))
-                return edge.Target;
-            Debug.Assert(node.Equals(edge.Target));
-            return edge.Source;
-        }
-
-        public static TNode GetOther<TNode, TEdge>(this TEdge edge, TNode node)
-            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            GetOther<TNode, TNode, TEdge>(edge, node);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetDirection<TNode, TEdge>(this TEdge edge, TNode source)
-            where TNode : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            GetDirection<TNode, TNode, TEdge>(edge, source);
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool GetDirection<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike source)
-            where TNodeLike : IEquatable<TNode> where TEdge : IEdge<TNode> =>
-            source.Equals(edge.Source);
-
+        /// <summary>
+        /// Create Edges from Nodes.
+        /// </summary>
+        /// <param name="graph">Target Graph</param>
+        /// <param name="nodes">Nodes to link edges</param>
+        /// <param name="maxDistSq"></param>
+        /// <param name="minAngle"></param>
+        /// <param name="func"></param>
         //TODO There are some irregular angle yet. 
-        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float minDistSq, float minAngle,
+        public static void CreateEdges<TNode, TEdge, TGraph>(TGraph graph, TNode[] nodes, float maxDistSq, float minAngle,
             Func<TNode, TNode, TEdge> func)
             where TNode : IEquatable<TNode>, IIDHolder, IVector3Node
             where TEdge : IEdge<TNode>
-            where TGraph : IGraph<TNode, TEdge>
+            where TGraph : IWritableGraph<TNode, TEdge>
         {
             //var nodes = graph.GetNodes().ToArray();
             var addDict = new DictionarySlim<TNode, List<(TNode node, float dist)>>();
@@ -53,7 +36,7 @@ namespace BlueDove.UGraph
                     var nodeB = nodes[j];
                     var vec = nodeB.Position - nodeA.Position;
                     var distSq = Vector3.SqrMagnitude(vec);
-                    if (distSq > minDistSq)
+                    if (distSq > maxDistSq)
                         continue;
                     var dist = Mathf.Sqrt(distSq);
                     list.Add((nodeB, dist));

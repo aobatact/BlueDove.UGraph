@@ -5,11 +5,18 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public readonly struct BidirectionalGraph<TNode, TEdge> : IGraph<TNode, DirectionalEdge<TNode, TEdge>>
+    /// <summary>
+    /// Simple Dictionary Based Bidirectional Graph
+    /// </summary>
+    /// <typeparam name="TNode">Node</typeparam>
+    /// <typeparam name="TEdge">Edge wrapped by <see cref="DirectionalEdge{TNode, TEdge}"/></typeparam>
+    public readonly struct BidirectionalGraph<TNode, TEdge> : IWritableGraph<TNode, DirectionalEdge<TNode, TEdge>>, IGraph<TNode,DirectionalEdge<TNode, TEdge>>
         where TNode : IEquatable<TNode>, IIDHolder
         where TEdge : IEdge<TNode>, IEquatable<TEdge>
     {
         private readonly DictionarySlim<TNode, List<DirectionalEdge<TNode, TEdge>>> _dictionary;
+
+        public bool IsInit => !(_dictionary is null);
 
         public BidirectionalGraph(int initCapacity)
         {
@@ -47,7 +54,11 @@ namespace BlueDove.UGraph
         }
 
         public IEnumerable<DirectionalEdge<TNode, TEdge>> GetEdges()
-            => _dictionary.SelectMany(pair => pair.Value.Where(edge => edge.Target.ID > edge.Source.ID));
+            => _dictionary.SelectMany(pair => pair.Value);
+
+        public IEnumerable<TEdge> GetEdgesNoDuplicate()
+            => _dictionary.SelectMany(pair
+                => pair.Value.Where(edge => edge.Target.ID > edge.Source.ID).Select(x => x.Edge));
 
         public IEnumerable<DirectionalEdge<TNode, TEdge>> GetEdges(TNode node) =>
             _dictionary.TryGetValue(node, out var list)
@@ -61,6 +72,17 @@ namespace BlueDove.UGraph
 
         public bool AddEdge(TEdge edge)
             => AddEdge(new DirectionalEdge<TNode, TEdge>(edge, true));
+
+        public bool AddNode(TNode node)
+        {
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<DirectionalEdge<TNode, TEdge>>();
+                return true;
+            }
+            return false;
+        }
 
         public bool AddEdge(DirectionalEdge<TNode, TEdge> edge)
         {
@@ -82,6 +104,8 @@ namespace BlueDove.UGraph
         }
 
         public bool RemoveNode(TNode node) => _dictionary.Remove(node);
+
+        public bool RemoveEdge(TEdge edge) => RemoveEdge(new DirectionalEdge<TNode, TEdge>(edge, true));
 
         public bool RemoveEdge(DirectionalEdge<TNode, TEdge> edge)
         {

@@ -1,9 +1,7 @@
 {
-    "name": "BlueDove.UGraph",
+    "name": "BlueDove.InputUtils",
     "references": [
-        "GUID:a4b99c517ed80b74e9a076b63baa8f6e",
-        "GUID:e0cd26848372d4e5c891c569017e11f1",
-        "GUID:d8b63aba1907145bea998dd612889d6b"
+        "GUID:75469ad4d38634e559750d17036d5f7c"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

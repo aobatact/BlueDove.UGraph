@@ -5,7 +5,7 @@ using Microsoft.Collections.Extensions;
 
 namespace BlueDove.UGraph
 {
-    public struct SimpleDictionaryGraph<TNode, TEdge> : IGraph<TNode, TEdge> where TEdge : IEdge<TNode> where TNode : IEquatable<TNode>, IIDHolder
+    public struct SimpleDictionaryGraph<TNode, TEdge> : IWritableGraph<TNode, TEdge>, IGraph<TNode, TEdge> where TEdge : IEdge<TNode> where TNode : IEquatable<TNode>, IIDHolder
     {
         private readonly DictionarySlim<TNode, List<TEdge>> _dictionary;
 
@@ -46,6 +46,17 @@ namespace BlueDove.UGraph
         public IEnumerable<TNode> GetNodes() => _dictionary.Select(x => x.Key);
 
         public bool AcceptDuplicateEdges => false;
+
+        public bool AddNode(TNode node) 
+        { 
+            ref var list = ref _dictionary.GetOrAddValueRef(node);
+            if (list == null)
+            {
+                list = new List<TEdge>();
+                return true;
+            }
+            return false;
+        }
 
         public bool AddEdge(TEdge edge)
         {
