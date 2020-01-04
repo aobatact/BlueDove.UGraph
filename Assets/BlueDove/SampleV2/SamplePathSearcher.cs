@@ -54,7 +54,9 @@ namespace BlueDove.SampleV2
 
         public void PaintPath()
         {
-            foreach (var edge in GetPath())
+            var path = GetPath();
+            if (path.IsEmpty) return;
+            foreach (var edge in path)
             {
                 edge.Edge.SetColor(pathColor);
             }
@@ -69,7 +71,6 @@ namespace BlueDove.SampleV2
             }
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void OnHits(RaycastHit[] hits, int count)
         {
             var node = ObjSelector.GetObjectFromHits<SampleNode>(hits, count);

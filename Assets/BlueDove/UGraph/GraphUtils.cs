@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Microsoft.Collections.Extensions;
-using Unity.Collections;
 using UnityEngine;
 
 namespace BlueDove.UGraph
@@ -19,6 +17,13 @@ namespace BlueDove.UGraph
         public static bool GetDirection<TNode, TNodeLike, TEdge>(this TEdge edge, TNodeLike source)
             where TNodeLike : IEquatable<TNode> where TEdge : IEdge<TNode> =>
             source.Equals(edge.Source);
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 GetDirectionalVector<TNode, TEdge>(this TEdge edge) where TNode : IVector3Node where TEdge : IEdge<TNode>
+        {
+            return edge.Target.Position - edge.Source.Position;
+        }
+        
 
         /// <summary>
         /// Create Edges from Nodes.
@@ -140,6 +145,26 @@ namespace BlueDove.UGraph
                     }
                 }
             }
+        }
+
+        public static TNode ClosestNode<TNode, TEdge, TGraph>(TGraph graph, Vector3 position) 
+            where TNode : IVector3Node
+            where TEdge : IEdge<TNode>
+            where TGraph : IGraph<TNode, TEdge>
+        {
+            var dist = float.MaxValue;
+            TNode minNode = default;
+            foreach (var node in graph.GetNodes())
+            {
+                var nDist =  Vector3.Distance(node.Position, position);
+                if (dist > nDist)
+                {
+                    dist = nDist;
+                    minNode = node;
+                }
+            }
+
+            return minNode;
         }
     }
 }
