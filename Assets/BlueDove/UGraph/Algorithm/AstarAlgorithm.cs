@@ -41,13 +41,13 @@ namespace BlueDove.UGraph.Algorithm
             where TGFunc : ICostFunc<TEdge>
             where TEndNode : IEquatable<TNode>, ICostFunc<TNode>
         {
-            var nodeList = new DictionarySlim<int, AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>>();
+            var nodeList = new DictionarySlim<int, AStarNode<TNode, TEdge>>();
             TNode current;
             //If the start node fulfill the end condition, end the path finding.
             if (end.Equals(current = start))
                 return ImmutableList<TEdge>.Empty;
             end.MarkColor(NodeType.End);
-            var sNode = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>(current, true);
+            var sNode = new AStarNode<TNode, TEdge>(current, true);
             ref var min = ref sNode; 
             nodeList.GetOrAddValueRef(min.ID) = min;
             current.MarkColor(NodeType.Start);
@@ -65,7 +65,7 @@ namespace BlueDove.UGraph.Algorithm
                         return min.Path.Add(edge);
                     }
                     ref var aNode = ref nodeList.GetOrAddValueRef(ot.ID);
-                    if (!aNode.Initialized) aNode = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>(ot);
+                    if (!aNode.Initialized) aNode = new AStarNode<TNode, TEdge>(ot);
                     if (aNode.CurrentG <= min.CurrentG) continue;
                     var ng = min.CurrentG + costFunc.Calc(edge);
                     var nf = ng + end.Calc(ot);
@@ -141,13 +141,10 @@ namespace BlueDove.UGraph.Algorithm
             }
         }
 
-        internal struct AStarNode<TNode, TEdge, TGraph, THeap, TGFunc> :
-            IEquatable<AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>>
+        internal struct AStarNode<TNode, TEdge> :
+            IEquatable<AStarNode<TNode, TEdge>>
             where TNode : IEquatable<TNode>, IIDHolder
             where TEdge : IEdge<TNode>
-            where TGraph : IGraph<TNode, TEdge>
-            where THeap : IHeap<KeyValuePair<float, int>>
-            where TGFunc : ICostFunc<TEdge>
         {
             public AStarNode(TNode value)
             {
@@ -169,7 +166,7 @@ namespace BlueDove.UGraph.Algorithm
                     Path = ImmutableList<TEdge>.Empty;
                 }
                 else
-                    this = new AStarNode<TNode, TEdge, TGraph, THeap, TGFunc>(node);
+                    this = new AStarNode<TNode, TEdge>(node);
             }
         
             public TNode Value { get; }
@@ -179,11 +176,11 @@ namespace BlueDove.UGraph.Algorithm
             public bool Closed { get; set; }
             public bool Initialized => Path != null;
             public int ID => Value?.ID ?? 0;
-            public bool Equals(AStarNode<TNode, TEdge, TGraph, THeap, TGFunc> other)
+            public bool Equals(AStarNode<TNode, TEdge> other)
                 => ID == other.ID;
 
             public override bool Equals(object obj) 
-                => obj is AStarNode<TNode, TEdge, TGraph, THeap, TGFunc> other && Equals(other);
+                => obj is AStarNode<TNode, TEdge> other && Equals(other);
 
             public override int GetHashCode() => ID;
         }

@@ -7,6 +7,19 @@ using Unity.Jobs;
 namespace BlueDove.UCollections.Native
 {
     [NativeContainer]
+    public struct NativeFixedSizedRadixHeap<T, TConverter>
+        where T : struct
+        where TConverter : struct, IUnsignedValueConverter<T>
+    {
+        private NativeArray<T> values;
+        private int Count;
+        private T Last { get; set; }
+        private T Max { get; set; }
+
+    }
+
+    
+    [NativeContainer]
     public struct NativeRadixHeap<T, TConverter> : IHeap<T>, IDisposable
         where T : struct
         where TConverter : struct, IUnsignedValueConverter<T>
