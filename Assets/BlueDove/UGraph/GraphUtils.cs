@@ -22,7 +22,7 @@ namespace BlueDove.UGraph
             Func<TNode, TNode, TEdge> func)
             where TNode : IEquatable<TNode>, IIDHolder, IVector3Node
             where TEdge : IEdge<TNode>
-            where TGraph : IWritableGraph<TNode, TEdge>
+            where TGraph : IEditableGraph<TNode, TEdge>
         {
             //var nodes = graph.GetNodes().ToArray();
             var addDict = new DictionarySlim<TNode, List<(TNode node, float dist)>>();

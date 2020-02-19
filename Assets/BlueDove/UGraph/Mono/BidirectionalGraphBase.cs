@@ -5,7 +5,7 @@ using UnityEngine;
 namespace BlueDove.UGraph.Mono
 {
     public abstract class BidirectionalGraphBase<TNode, TEdge> : MonoBehaviour, IGraph<TNode, DirectionalEdge<TNode, TEdge>>, 
-        IWritableGraph<TNode, DirectionalEdge<TNode, TEdge>>
+        IEditableGraph<TNode, DirectionalEdge<TNode, TEdge>>
         where TNode : NodeBase, IEquatable<TNode>
         where TEdge : EdgeBase<TNode>, IEquatable<TEdge>
     {

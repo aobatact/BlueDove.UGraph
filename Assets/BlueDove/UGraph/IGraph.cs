@@ -13,7 +13,7 @@ namespace BlueDove.UGraph
         IEnumerable<TNode> GetNodes();
     }
 
-    public interface IWritableGraph<in TNode, in TEdge> where TEdge : IEdge<TNode>
+    public interface IEditableGraph<in TNode, in TEdge> where TEdge : IEdge<TNode>
     {
         bool AcceptDuplicateEdges { get; }
         bool AddNode(TNode node);
