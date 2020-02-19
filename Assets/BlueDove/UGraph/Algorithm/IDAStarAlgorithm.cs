@@ -8,7 +8,7 @@ namespace BlueDove.UGraph.Algorithm
 {
     public static class IDAStarAlgorithm
     {
-        public static IEnumerable<TEdge> Compute<TNode, TEdge, TGraph, THeap, TGFunc, TEndNode>(
+        public static TEdge[] Compute<TNode, TEdge, TGraph, TGFunc, TEndNode>(
             TGraph graph, TGFunc costFunc, TNode start, TEndNode end)
             where TNode : IEquatable<TNode>, IIDHolder
             where TEdge : IEdge<TNode>
@@ -17,63 +17,59 @@ namespace BlueDove.UGraph.Algorithm
             where TEndNode : IEquatable<TNode>, ICostFunc<TNode>
         {
             var bound = end.Calc(start);
-            var stack = new Stack<TEdge>();
-            var head = start;
-            while (true)
+            var pathStack = new StackLite<(TEdge edge, float g, float min, IEnumerator<TEdge> enumerator)>();
+            try
             {
-                foreach (var edge in graph.GetEdges(start))
+                L0:
+                var head = start;
+                var g = 0f;
+                L1:
+                if (end.Equals(head))
                 {
-                    
+                    var res = new TEdge[pathStack.Count];
+                    for (var i = 0; i < pathStack.Values.Length; i++)
+                    {
+                        res[i] = pathStack.Values[i].edge;
+                    }
+                    return res;
                 }
-                var res = ComputeInner(graph, costFunc, end, stack, head, 0, bound);
-                if (res < 0)
+                var en = graph.GetEdges(head).GetEnumerator();
+                var nextF = float.PositiveInfinity;
+                L2:
+                if (en.MoveNext())
                 {
-                    return stack.Reverse();
+                    var c = en.Current;
+                    var nG = g + costFunc.Calc(c);
+                    var nF = nG + end.Calc(c.Target);
+                    if (nF < nextF) nextF = nF;
+                    if (nF >= bound) goto L2;
+                    pathStack.Push((c, g, nextF, en));
+                    head = c.Target;
+                    goto L1;
                 }
-                if (float.IsInfinity(res))
+                en?.Dispose();
+                if (pathStack.Count > 0)
                 {
-                    return null;
+                    TEdge nEdge;
+                    float nNf;
+                    (nEdge, g, nNf, en) = pathStack.Pop();
+                    head = nEdge.Target;
+                    if (nNf < nextF) nextF = nNf;
+                    goto L2;
                 }
-                bound = res;
+                if (!float.IsPositiveInfinity(nextF))
+                {
+                    bound = nextF;
+                    goto L0;
+                }
+                return null;
             }
-        }
-
-        public static float ComputeInner<TNode, TEdge, TGraph, TGFunc, TEndNode>(
-            TGraph graph, TGFunc costFunc, TEndNode end, Stack<TEdge> stack, TNode head, float g, float bound)
-            where TNode : IEquatable<TNode>, IIDHolder
-            where TEdge : IEdge<TNode>
-            where TGraph : IGraph<TNode, TEdge>
-            where TGFunc : ICostFunc<TEdge>
-            where TEndNode : IEquatable<TNode>, ICostFunc<TNode>
-        {
-            if (end.Equals(head))
-                return -1;
-            var f = g + end.Calc(head);
-            if (f > bound) return f;
-            var min = float.PositiveInfinity; //float.PositiveInfinity;
-            foreach (var edge in graph.GetEdges(head))
+            finally
             {
-                if (!stack.Contains(edge))
+                while (pathStack.Count > 0)
                 {
-                    stack.Push(edge);
-                    var nF = ComputeInner(graph, costFunc, end, stack,
-                        edge.Target, g + costFunc.Calc(edge), bound);
-                    if (nF < 0)
-                        return nF;
-                    if (nF < min) min = nF;
-                    stack.Pop();
+                    pathStack.Pop().enumerator?.Dispose();
                 }
-            }
-            return min;
-        }
-        
-        struct SearchNode<TNode, TEdge>
-        {
-            public TNode Value;
-
-            public SearchNode(TNode start)
-            {
-                Value = start;
             }
         }
     }
